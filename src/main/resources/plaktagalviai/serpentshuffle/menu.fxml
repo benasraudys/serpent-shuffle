@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/17.0.2-ea" fx:controller="plaktagalviai.serpentshuffle.MenuController">
+   <children>
+      <VBox alignment="CENTER" spacing="20" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <Label style="-fx-font-size: 64px; -fx-font-weight: bold;" text="Serpent Shuffle" />
+         <Button alignment="CENTER" onAction="#startTheGame" style="-fx-font-size: 24px; -fx-font-weight: bold;" text="Play Game" />
+         <Button alignment="CENTER" onAction="#exitGame" style="-fx-font-size: 24px; -fx-font-weight: bold;" text="Exit" />
+      </VBox>
+   </children>
+</AnchorPane>
