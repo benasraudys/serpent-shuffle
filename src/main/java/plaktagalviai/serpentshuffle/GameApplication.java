@@ -13,6 +13,7 @@ import javafx.util.Duration;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class GameApplication extends Application {
 
@@ -24,6 +25,7 @@ public class GameApplication extends Application {
     private static final int SCENE_HEIGHT = 720;
 
     private final List<SnakeSegment> snake = new ArrayList<>();
+    private Apple apple;
 
     @Override
     public void start(Stage stage) {
@@ -40,6 +42,9 @@ public class GameApplication extends Application {
         addSegment();
         addSegment();
 
+        addApple();
+        root.getChildren().add(apple.getRectangle());
+
         Timeline timeline = new Timeline(new KeyFrame(Duration.millis(90), e -> moveSnake()));
         timeline.setCycleCount(Timeline.INDEFINITE);
         timeline.play();
@@ -52,27 +57,46 @@ public class GameApplication extends Application {
         stage.show();
     }
 
+    private void addApple() {
+        Random rand = new Random();
+        int x = rand.nextInt(SCENE_WIDTH / RECT_WIDTH);
+        x = x * RECT_WIDTH;
+        int y = rand.nextInt(SCENE_HEIGHT / RECT_HEIGHT);
+        y = y * RECT_HEIGHT;
+        apple = new Apple(x , y , RECT_WIDTH, RECT_HEIGHT);
+        apple.getRectangle().setFill(Color.RED);
+    }
+
+    private KeyCode lastCode;
     private void updateDirection(KeyCode code) {
         if (snake.isEmpty()) return;
-
         double dx = 0, dy = 0;
         switch (code) {
             case UP:
+                if(lastCode != KeyCode.DOWN){
                 dy = -MOVE_DISTANCE;
+                }
                 break;
             case DOWN:
-                dy = MOVE_DISTANCE;
+                if(lastCode != KeyCode.UP) {
+                    dy = MOVE_DISTANCE;
+                }
                 break;
             case LEFT:
-                dx = -MOVE_DISTANCE;
+                if(lastCode != KeyCode.RIGHT) {
+                    dx = -MOVE_DISTANCE;
+                }
                 break;
             case RIGHT:
-                dx = MOVE_DISTANCE;
+                if(lastCode != KeyCode.LEFT) {
+                    dx = MOVE_DISTANCE;
+                }
                 break;
             case SPACE:
                 addSegment();
                 break;
         }
+        lastCode = code;
         if (dx != 0 || dy != 0) {
             snake.getFirst().setDirection(dx, dy);
         }
