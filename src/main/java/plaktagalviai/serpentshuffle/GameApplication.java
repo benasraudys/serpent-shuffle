@@ -21,7 +21,7 @@ public class GameApplication extends Application {
     private static final int RECT_HEIGHT = 30;
     private static final int MOVE_DISTANCE = 30;
 
-    private static final int SCENE_WIDTH = 720;
+    private static final int SCENE_WIDTH = 1280;
     private static final int SCENE_HEIGHT = 720;
 
     private final List<SnakeSegment> snake = new ArrayList<>();
