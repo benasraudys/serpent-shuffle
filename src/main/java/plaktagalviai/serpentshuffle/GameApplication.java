@@ -45,7 +45,8 @@ public class GameApplication extends Application {
         addApple();
         root.getChildren().add(apple.getRectangle());
 
-        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(90), e -> moveSnake()));
+
+        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(90), e -> moveSnake(root)));
         timeline.setCycleCount(Timeline.INDEFINITE);
         timeline.play();
 
@@ -102,11 +103,17 @@ public class GameApplication extends Application {
         }
     }
 
-    private void moveSnake() {
+    private void moveSnake(Pane root) {
         double prevX, prevY, newX, newY;
         prevX = snake.getFirst().getRectangle().getX();
         prevY = snake.getFirst().getRectangle().getY();
         snake.getFirst().move();
+
+        if (apple.isAppleEaten(prevX, prevY, RECT_WIDTH, RECT_HEIGHT)){//checks if snake is on apple
+            root.getChildren().remove(apple.getRectangle());//removes old apple and generates new one
+            addApple();
+            root.getChildren().add(apple.getRectangle());
+        }
 
         for (int i = 1; i < snake.size(); i++) {
             newX = snake.get(i).getRectangle().getX();
@@ -115,7 +122,10 @@ public class GameApplication extends Application {
             snake.get(i).getRectangle().setY(prevY);
             prevX = newX;
             prevY = newY;
+
         }
+
+
     }
 
     private void addSegment() {
