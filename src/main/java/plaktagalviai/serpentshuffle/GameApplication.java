@@ -3,6 +3,7 @@ package plaktagalviai.serpentshuffle;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
@@ -137,6 +138,8 @@ public class GameApplication extends Application {
                 snake.getFirst().getRectangle().getY() <= -60 ||
                 snake.getFirst().getRectangle().getY() + RECT_HEIGHT >= SCENE_HEIGHT) {
             //gameover
+            System.out.println("Game over.");
+            Platform.exit();
         }
 
     }
