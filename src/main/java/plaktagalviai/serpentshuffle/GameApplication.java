@@ -24,6 +24,7 @@ public class GameApplication extends Application {
     private static final int SCENE_WIDTH = 1280;
     private static final int SCENE_HEIGHT = 720;
 
+
     private final List<SnakeSegment> snake = new ArrayList<>();
     private Apple apple;
 
@@ -31,6 +32,8 @@ public class GameApplication extends Application {
     public void start(Stage stage) {
         Pane root = new Pane();
         Scene scene = new Scene(root, SCENE_WIDTH, SCENE_HEIGHT);
+
+
 
         // Initialize the snake with one segment at the center
         SnakeSegment initialSegment = new SnakeSegment(scene.getWidth() / 2 - RECT_WIDTH / 2f + 15,
@@ -113,7 +116,10 @@ public class GameApplication extends Application {
             root.getChildren().remove(apple.getRectangle());//removes old apple and generates new one
             addApple();
             root.getChildren().add(apple.getRectangle());
+            addSegment();
         }
+
+
 
         for (int i = 1; i < snake.size(); i++) {
             newX = snake.get(i).getRectangle().getX();
@@ -125,6 +131,13 @@ public class GameApplication extends Application {
 
         }
 
+        //Wall collision
+        if (snake.getFirst().getRectangle().getX() <= -60 ||
+                snake.getFirst().getRectangle().getX() + RECT_WIDTH >= SCENE_WIDTH ||
+                snake.getFirst().getRectangle().getY() <= -60 ||
+                snake.getFirst().getRectangle().getY() + RECT_HEIGHT >= SCENE_HEIGHT) {
+            //gameover
+        }
 
     }
 
@@ -137,4 +150,6 @@ public class GameApplication extends Application {
         snake.add(newSegment);
         ((Pane) snake.getFirst().getRectangle().getParent()).getChildren().add(newSegment.getRectangle());
     }
+
+
 }
