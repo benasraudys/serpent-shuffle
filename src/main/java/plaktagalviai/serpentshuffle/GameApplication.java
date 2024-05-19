@@ -12,18 +12,25 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 
+import javafx.scene.image.Image;
+import javafx.scene.paint.ImagePattern;
+
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 public class GameApplication extends Application {
 
-    private static final int RECT_WIDTH = 30;
-    private static final int RECT_HEIGHT = 30;
-    private static final int MOVE_DISTANCE = 30;
+    private static final int RECT_WIDTH = 45;
+    private static final int RECT_HEIGHT = 45;
+    private static final int MOVE_DISTANCE = 45;
 
-    private static final int SCENE_WIDTH = 1280;
+    private static final int SCENE_WIDTH = 720;
     private static final int SCENE_HEIGHT = 720;
+
+    private static final int WINDOW_WIDTH = 1280;
+    private static final int WINDOW_HEIGHT = 720;
 
 
     private final List<SnakeSegment> snake = new ArrayList<>();
@@ -32,13 +39,13 @@ public class GameApplication extends Application {
     @Override
     public void start(Stage stage) {
         Pane root = new Pane();
-        Scene scene = new Scene(root, SCENE_WIDTH, SCENE_HEIGHT);
+        Scene scene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT);
 
 
 
         // Initialize the snake with one segment at the center
-        SnakeSegment initialSegment = new SnakeSegment(scene.getWidth() / 2 - RECT_WIDTH / 2f + 15,
-                scene.getHeight() / 2 - RECT_HEIGHT / 2f + 15,
+        SnakeSegment initialSegment = new SnakeSegment((float)SCENE_WIDTH / 2 - RECT_WIDTH / 2f + 15,
+                (float)SCENE_HEIGHT / 2 - RECT_HEIGHT / 2f + 15,
                 RECT_WIDTH, RECT_HEIGHT);
         initialSegment.getRectangle().setFill(Color.GREEN);
         snake.add(initialSegment);
@@ -69,7 +76,9 @@ public class GameApplication extends Application {
         int y = rand.nextInt(SCENE_HEIGHT / RECT_HEIGHT);
         y = y * RECT_HEIGHT;
         apple = new Apple(x , y , RECT_WIDTH, RECT_HEIGHT);
-        apple.getRectangle().setFill(Color.RED);
+        Image image = new Image(getClass().getResourceAsStream("apple.png"));
+        apple.getRectangle().setFill(new ImagePattern(image));
+
     }
 
     private KeyCode lastCode;
@@ -137,7 +146,7 @@ public class GameApplication extends Application {
                 snake.getFirst().getRectangle().getX() + RECT_WIDTH >= SCENE_WIDTH ||
                 snake.getFirst().getRectangle().getY() <= -60 ||
                 snake.getFirst().getRectangle().getY() + RECT_HEIGHT >= SCENE_HEIGHT) {
-            //gameover
+            //game over
             System.out.println("Game over.");
             Platform.exit();
         }
