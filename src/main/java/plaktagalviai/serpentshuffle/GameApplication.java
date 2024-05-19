@@ -22,14 +22,11 @@ import java.util.Random;
 
 public class GameApplication extends Application {
 
-    private static final int RECT_WIDTH = 45;
-    private static final int RECT_HEIGHT = 45;
-    private static final int MOVE_DISTANCE = 45;
+    private static final int SCENE_SIZE = 720; // Grid, the snake is moving on, size (in pixels)
+    private static final int GRID_SUBDIVISIONS = 16; // To how many parts the grid is divided to
+    private static final int SUBDIVISION_LENGTH = SCENE_SIZE / GRID_SUBDIVISIONS;
 
-    private static final int SCENE_WIDTH = 720;
-    private static final int SCENE_HEIGHT = 720;
-
-    private static final int WINDOW_WIDTH = 1280;
+    private static final int WINDOW_WIDTH = 720;
     private static final int WINDOW_HEIGHT = 720;
 
 
@@ -44,9 +41,9 @@ public class GameApplication extends Application {
 
 
         // Initialize the snake with one segment at the center
-        SnakeSegment initialSegment = new SnakeSegment((float)SCENE_WIDTH / 2 - RECT_WIDTH / 2f + 15,
-                (float)SCENE_HEIGHT / 2 - RECT_HEIGHT / 2f + 15,
-                RECT_WIDTH, RECT_HEIGHT);
+        SnakeSegment initialSegment = new SnakeSegment((float) SCENE_SIZE / 2 - SUBDIVISION_LENGTH / 2f + 15,
+                (float)SCENE_SIZE / 2 - SUBDIVISION_LENGTH / 2f + 15,
+                SUBDIVISION_LENGTH, SUBDIVISION_LENGTH);
         initialSegment.getRectangle().setFill(Color.GREEN);
         snake.add(initialSegment);
         root.getChildren().add(initialSegment.getRectangle());
@@ -71,15 +68,13 @@ public class GameApplication extends Application {
 
     private void addApple() {
         Random rand = new Random();
-        int x = rand.nextInt(SCENE_WIDTH / RECT_WIDTH);
-        x = x * RECT_WIDTH;
-        int y = rand.nextInt(SCENE_HEIGHT / RECT_HEIGHT);
-        y = y * RECT_HEIGHT;
-        apple = new Apple(x , y , RECT_WIDTH, RECT_HEIGHT);
+        int x = rand.nextInt(SCENE_SIZE / SUBDIVISION_LENGTH) * SUBDIVISION_LENGTH;
+        int y = rand.nextInt(SCENE_SIZE / SUBDIVISION_LENGTH) * SUBDIVISION_LENGTH;
+        apple = new Apple(x, y, SUBDIVISION_LENGTH, SUBDIVISION_LENGTH);
         Image image = new Image(getClass().getResourceAsStream("apple.png"));
         apple.getRectangle().setFill(new ImagePattern(image));
-
     }
+
 
     private KeyCode lastCode;
     private void updateDirection(KeyCode code) {
@@ -88,22 +83,22 @@ public class GameApplication extends Application {
         switch (code) {
             case UP:
                 if(lastCode != KeyCode.DOWN){
-                dy = -MOVE_DISTANCE;
+                dy = -SUBDIVISION_LENGTH;
                 }
                 break;
             case DOWN:
                 if(lastCode != KeyCode.UP) {
-                    dy = MOVE_DISTANCE;
+                    dy = SUBDIVISION_LENGTH;
                 }
                 break;
             case LEFT:
                 if(lastCode != KeyCode.RIGHT) {
-                    dx = -MOVE_DISTANCE;
+                    dx = -SUBDIVISION_LENGTH;
                 }
                 break;
             case RIGHT:
                 if(lastCode != KeyCode.LEFT) {
-                    dx = MOVE_DISTANCE;
+                    dx = SUBDIVISION_LENGTH;
                 }
                 break;
             case SPACE:
@@ -120,14 +115,16 @@ public class GameApplication extends Application {
         double prevX, prevY, newX, newY;
         prevX = snake.getFirst().getRectangle().getX();
         prevY = snake.getFirst().getRectangle().getY();
-        snake.getFirst().move();
 
-        if (apple.isAppleEaten(prevX, prevY, RECT_WIDTH, RECT_HEIGHT)){//checks if snake is on apple
-            root.getChildren().remove(apple.getRectangle());//removes old apple and generates new one
+        // Apple eating
+        if (apple.isAppleEaten(snake.getFirst().getX(), snake.getFirst().getY(), SUBDIVISION_LENGTH, SUBDIVISION_LENGTH)){
+            root.getChildren().remove(apple.getRectangle());
             addApple();
             root.getChildren().add(apple.getRectangle());
             addSegment();
         }
+
+        snake.getFirst().move();
 
 
 
@@ -143,9 +140,9 @@ public class GameApplication extends Application {
 
         //Wall collision
         if (snake.getFirst().getRectangle().getX() <= -60 ||
-                snake.getFirst().getRectangle().getX() + RECT_WIDTH >= SCENE_WIDTH ||
+                snake.getFirst().getRectangle().getX() + SUBDIVISION_LENGTH >= SCENE_SIZE ||
                 snake.getFirst().getRectangle().getY() <= -60 ||
-                snake.getFirst().getRectangle().getY() + RECT_HEIGHT >= SCENE_HEIGHT) {
+                snake.getFirst().getRectangle().getY() + SUBDIVISION_LENGTH >= SCENE_SIZE) {
             //game over
             System.out.println("Game over.");
             Platform.exit();
@@ -157,8 +154,9 @@ public class GameApplication extends Application {
         SnakeSegment last = snake.getLast();
         SnakeSegment newSegment = new SnakeSegment(last.getRectangle().getX(),
                 last.getRectangle().getY(),
-                RECT_WIDTH, RECT_HEIGHT);
-        newSegment.getRectangle().setFill(Color.GREEN);
+                SUBDIVISION_LENGTH, SUBDIVISION_LENGTH);
+        Image image = new Image(getClass().getResourceAsStream("icon.png"));
+        newSegment.getRectangle().setFill(new ImagePattern(image));
         snake.add(newSegment);
         ((Pane) snake.getFirst().getRectangle().getParent()).getChildren().add(newSegment.getRectangle());
     }
