@@ -22,8 +22,8 @@ import java.util.Random;
 
 public class GameApplication extends Application {
 
-    private static final int SCENE_SIZE = 720; // Grid, the snake is moving on, size (in pixels)
-    private static final int GRID_SUBDIVISIONS = 16; // To how many parts the grid is divided to
+    private static final int SCENE_SIZE = 720; // Grid, the snake is moving on, size (in pixels) (has to be divisible by GRID_SUBDIVISIONS)
+    private static final int GRID_SUBDIVISIONS = 16; // To how many parts the grid is divided to (has to be divisible by 2)
     private static final int SUBDIVISION_LENGTH = SCENE_SIZE / GRID_SUBDIVISIONS;
 
     private static final int WINDOW_WIDTH = 720;
@@ -139,6 +139,15 @@ public class GameApplication extends Application {
         }
 
         //Wall collision
+
+        System.out.println(snake.getFirst().getX() + " " + snake.getFirst().getY());
+
+        if ( (snake.getFirst().getX() > GRID_SUBDIVISIONS/2) || (snake.getFirst().getY() > GRID_SUBDIVISIONS/2) ||
+             (snake.getFirst().getX() < -GRID_SUBDIVISIONS/2) || (snake.getFirst().getY() < -GRID_SUBDIVISIONS/2) ) {
+            gameOver();
+        }
+
+        /*
         if (snake.getFirst().getRectangle().getX() <= -60 ||
                 snake.getFirst().getRectangle().getX() + SUBDIVISION_LENGTH >= SCENE_SIZE ||
                 snake.getFirst().getRectangle().getY() <= -60 ||
@@ -147,6 +156,7 @@ public class GameApplication extends Application {
             System.out.println("Game over.");
             Platform.exit();
         }
+         */
 
     }
 
@@ -159,6 +169,11 @@ public class GameApplication extends Application {
         newSegment.getRectangle().setFill(new ImagePattern(image));
         snake.add(newSegment);
         ((Pane) snake.getFirst().getRectangle().getParent()).getChildren().add(newSegment.getRectangle());
+    }
+
+    private void gameOver() {
+        System.out.println("Game over.");
+        Platform.exit();
     }
 
 
