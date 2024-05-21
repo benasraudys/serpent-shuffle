@@ -33,6 +33,8 @@ public class GameApplication extends Application {
     private final List<SnakeSegment> snake = new ArrayList<>();
     private Apple apple;
 
+    private int gameScore = 0;
+
     @Override
     public void start(Stage stage) {
         Pane root = new Pane();
@@ -122,6 +124,7 @@ public class GameApplication extends Application {
             addApple();
             root.getChildren().add(apple.getRectangle());
             addSegment();
+            increaseGameScore();
         }
 
         snake.getFirst().move();
@@ -147,6 +150,7 @@ public class GameApplication extends Application {
             gameOver();
         }
 
+
         /*
         if (snake.getFirst().getRectangle().getX() <= -60 ||
                 snake.getFirst().getRectangle().getX() + SUBDIVISION_LENGTH >= SCENE_SIZE ||
@@ -171,8 +175,24 @@ public class GameApplication extends Application {
         ((Pane) snake.getFirst().getRectangle().getParent()).getChildren().add(newSegment.getRectangle());
     }
 
+    private void increaseGameScore(){// Game score increases by more as more points are already gained
+        if(gameScore <= 5){
+            gameScore++;
+        }
+        else if(gameScore > 5 && gameScore <= 10){
+            gameScore+=2;
+        }
+        else if(gameScore > 10 && gameScore <= 27){
+            gameScore+=3;
+        }
+        else{
+            gameScore+=5;
+        }
+    }
+
     private void gameOver() {
         System.out.println("Game over.");
+        System.out.println("Game score: " + gameScore);
         Platform.exit();
     }
 
