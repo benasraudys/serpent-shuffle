@@ -4,13 +4,17 @@ import javafx.scene.shape.Rectangle;
 
 public class SnakeSegment {
     private final Rectangle rectangle;
+    private final int subdivisionLength;
     private double dx;
     private double dy;
     private double x;
     private double y;
 
-    public SnakeSegment(double x, double y, double width, double height) {
-        this.rectangle = new Rectangle(x, y, width, height);
+    public SnakeSegment(double x, double y, int subdivisionLength) {
+        this.rectangle = new Rectangle(x * subdivisionLength, y * subdivisionLength, subdivisionLength, subdivisionLength);
+        this.subdivisionLength = subdivisionLength;
+        //this.x = x;
+        //this.y = y;
         this.dx = 0;
         this.dy = 0;
     }
@@ -41,9 +45,11 @@ public class SnakeSegment {
     }
 
     public void move() {
-        rectangle.setX(rectangle.getX() + dx);
-        x += dx/45;
-        rectangle.setY(rectangle.getY() + dy);
-        y += dy/45;
+        // Updates the rectangle on screen
+        rectangle.setX(rectangle.getX() + subdivisionLength * dx);
+        rectangle.setY(rectangle.getY() + subdivisionLength * dy);
+        // Updates segment coordinates
+        x += dx;
+        y += dy;
     }
 }

@@ -25,12 +25,13 @@ public class GameApplication extends Application {
     private static final int SCENE_SIZE = 720; // Grid, the snake is moving on, size (in pixels) (has to be divisible by GRID_SUBDIVISIONS)
     private static final int GRID_SUBDIVISIONS = 16; // To how many parts the grid is divided to (has to be divisible by 2)
     private static final int SUBDIVISION_LENGTH = SCENE_SIZE / GRID_SUBDIVISIONS;
+    private static final int MOVE_TIME_MILLISECONDS = 90; // How fast the snake moves
 
     private static final int WINDOW_WIDTH = 720;
     private static final int WINDOW_HEIGHT = 720;
 
 
-    private final List<SnakeSegment> snake = new ArrayList<>();
+    private final List<SnakeSegment> snake = new Snake();
     private Apple apple;
 
     private int gameScore = 0;
@@ -43,9 +44,7 @@ public class GameApplication extends Application {
 
 
         // Initialize the snake with one segment at the center
-        SnakeSegment initialSegment = new SnakeSegment((float) SCENE_SIZE / 2 - SUBDIVISION_LENGTH / 2f + 15,
-                (float)SCENE_SIZE / 2 - SUBDIVISION_LENGTH / 2f + 15,
-                SUBDIVISION_LENGTH, SUBDIVISION_LENGTH);
+        SnakeSegment initialSegment = new SnakeSegment((float) GRID_SUBDIVISIONS / 2f,GRID_SUBDIVISIONS / 2f, SUBDIVISION_LENGTH);
         initialSegment.getRectangle().setFill(Color.GREEN);
         snake.add(initialSegment);
         root.getChildren().add(initialSegment.getRectangle());
@@ -56,7 +55,7 @@ public class GameApplication extends Application {
         root.getChildren().add(apple.getRectangle());
 
 
-        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(90), e -> moveSnake(root)));
+        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(MOVE_TIME_MILLISECONDS), e -> moveSnake(root)));
         timeline.setCycleCount(Timeline.INDEFINITE);
         timeline.play();
 
@@ -85,22 +84,22 @@ public class GameApplication extends Application {
         switch (code) {
             case UP:
                 if(lastCode != KeyCode.DOWN){
-                dy = -SUBDIVISION_LENGTH;
+                dy = -1;
                 }
                 break;
             case DOWN:
                 if(lastCode != KeyCode.UP) {
-                    dy = SUBDIVISION_LENGTH;
+                    dy = 1;
                 }
                 break;
             case LEFT:
                 if(lastCode != KeyCode.RIGHT) {
-                    dx = -SUBDIVISION_LENGTH;
+                    dx = -1;
                 }
                 break;
             case RIGHT:
                 if(lastCode != KeyCode.LEFT) {
-                    dx = SUBDIVISION_LENGTH;
+                    dx = 1;
                 }
                 break;
             case SPACE:
@@ -143,32 +142,19 @@ public class GameApplication extends Application {
 
         //Wall collision
 
-        System.out.println(snake.getFirst().getX() + " " + snake.getFirst().getY());
+        //System.out.println(snake.getFirst().getX() + " " + snake.getFirst().getY());
 
-        if ( (snake.getFirst().getX() > GRID_SUBDIVISIONS/2) || (snake.getFirst().getY() > GRID_SUBDIVISIONS/2) ||
-             (snake.getFirst().getX() < -GRID_SUBDIVISIONS/2) || (snake.getFirst().getY() < -GRID_SUBDIVISIONS/2) ) {
+        int gridEdge = (int) ((float)GRID_SUBDIVISIONS/2);
+        if ( (snake.getFirst().getX() > gridEdge) || (snake.getFirst().getY() > gridEdge) ||
+             (snake.getFirst().getX() < -gridEdge) || (snake.getFirst().getY() < -gridEdge) ) {
             gameOver();
         }
-
-
-        /*
-        if (snake.getFirst().getRectangle().getX() <= -60 ||
-                snake.getFirst().getRectangle().getX() + SUBDIVISION_LENGTH >= SCENE_SIZE ||
-                snake.getFirst().getRectangle().getY() <= -60 ||
-                snake.getFirst().getRectangle().getY() + SUBDIVISION_LENGTH >= SCENE_SIZE) {
-            //game over
-            System.out.println("Game over.");
-            Platform.exit();
-        }
-         */
-
     }
 
     private void addSegment() {
         SnakeSegment last = snake.getLast();
         SnakeSegment newSegment = new SnakeSegment(last.getRectangle().getX(),
-                last.getRectangle().getY(),
-                SUBDIVISION_LENGTH, SUBDIVISION_LENGTH);
+                last.getRectangle().getY(), SUBDIVISION_LENGTH);
         Image image = new Image(getClass().getResourceAsStream("icon.png"));
         newSegment.getRectangle().setFill(new ImagePattern(image));
         snake.add(newSegment);
