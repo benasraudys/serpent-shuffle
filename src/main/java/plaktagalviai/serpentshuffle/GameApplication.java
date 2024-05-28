@@ -102,8 +102,8 @@ public class GameApplication extends Application {
 
         // Initialize score display
         scoreText = new Text("SCORE: 0");
-        scoreText.setFill(Color.BLACK);
-        scoreText.setFont(Font.font("Arial", FontWeight.BOLD, 20));
+        scoreText.setFill(Color.WHITE);
+        scoreText.setFont(Font.font("Arial", FontWeight.BOLD, 32));
         scoreText.setX(320);
         scoreText.setY(30);
         root.getChildren().add(scoreText);
