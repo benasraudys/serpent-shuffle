@@ -23,22 +23,7 @@ public class Apple {
     }
 
     public boolean isAppleEaten(double snakeX, double snakeY, double recWidth, double recHeight){
-
         return (gridX == snakeX && gridY == snakeY);
-
-
-//        if(snakeX  >= x && snakeX  <= x + width && snakeY >= y && snakeY <= y + height){
-//            return true;
-//        }
-//
-//        else if(snakeX + recWidth >= x && snakeX + recWidth <= x + width && snakeY + recHeight >= y && snakeY + recHeight <= y + height){
-//            return true;
-//        }
-//        else{
-//            return false;
-//        }
-
-
     }
 
     public double getX() {
