@@ -15,8 +15,8 @@ public class Apple {
         this.y = y;
         this.width = width;
         this.height = height;
-        gridX = x/width -8; // TODO fix this, because will not work for different grid sizes
-        gridY = y/height -8;
+        gridX = x/width;
+        gridY = y/height;
     }
     public Rectangle getRectangle() {
         return rectangle;

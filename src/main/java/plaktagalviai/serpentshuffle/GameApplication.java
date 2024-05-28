@@ -83,8 +83,8 @@ public class GameApplication extends Application {
 
     private void addApple() {
         Random rand = new Random();
-        int x = rand.nextInt(SCENE_SIZE / SUBDIVISION_LENGTH) * SUBDIVISION_LENGTH;
-        int y = rand.nextInt(SCENE_SIZE / SUBDIVISION_LENGTH) * SUBDIVISION_LENGTH;
+        int x = rand.nextInt(GRID_SUBDIVISIONS) * SUBDIVISION_LENGTH;
+        int y = rand.nextInt(GRID_SUBDIVISIONS) * SUBDIVISION_LENGTH;
         apple = new Apple(x, y, SUBDIVISION_LENGTH, SUBDIVISION_LENGTH);
         Image image = new Image(getClass().getResourceAsStream("apple.png"));
         apple.getRectangle().setFill(new ImagePattern(image));
@@ -129,8 +129,8 @@ public class GameApplication extends Application {
     private void moveSnake(Pane root) {
 
         double prevX, prevY, newX, newY, prevDx, prevDy, newDx, newDy;
-        prevX = snake.getFirst().getX() + GRID_SUBDIVISIONS/2;// TODO fix this warning
-        prevY = snake.getFirst().getY() + GRID_SUBDIVISIONS/2;
+        prevX = snake.getFirst().getX();
+        prevY = snake.getFirst().getY();
         prevDx = snake.getFirst().getDx();
         prevDy = snake.getFirst().getDy();
 
@@ -168,11 +168,10 @@ public class GameApplication extends Application {
 
         //Wall collision
 
-        //System.out.println(snake.getFirst().getX() + " " + snake.getFirst().getY());
+        System.out.println(snake.getFirst().getX() + " " + snake.getFirst().getY());
 
-        int gridEdge = (int) ((float)GRID_SUBDIVISIONS/2);
-        if ( (snake.getFirst().getX() > gridEdge) || (snake.getFirst().getY() > gridEdge) ||
-             (snake.getFirst().getX() < -gridEdge) || (snake.getFirst().getY() < -gridEdge) ) {
+        if ( (snake.getFirst().getX() > GRID_SUBDIVISIONS-1) || (snake.getFirst().getY() > GRID_SUBDIVISIONS-1) ||
+             (snake.getFirst().getX() < 0) || (snake.getFirst().getY() < 0) ) { // TODO refactor
             gameOver();
         }
     }

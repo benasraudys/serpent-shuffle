@@ -8,8 +8,8 @@ public class SnakeSegment {
     private final int subdivisionLength;
     private double dx;
     private double dy;
-    private double x;
-    private double y;
+    private double x = 8;
+    private double y = 8;
 
     public SnakeSegment(double x, double y, int subdivisionLength) {
         this.rectangle = new Rectangle(x * subdivisionLength, y * subdivisionLength, subdivisionLength, subdivisionLength);
