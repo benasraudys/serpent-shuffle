@@ -11,6 +11,31 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
+
+import javafx.scene.image.Image;
+import javafx.scene.paint.ImagePattern;
+
+
+import javafx.scene.text.Text;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
+
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundImage;
+import javafx.scene.layout.BackgroundPosition;
+import javafx.scene.layout.BackgroundRepeat;
+import javafx.scene.layout.BackgroundSize;
+import javafx.scene.layout.Pane;
+import javafx.scene.Scene;
+import javafx.scene.image.Image;
+
 import java.io.IOException;
 import javafx.scene.image.Image;
 import javafx.scene.paint.ImagePattern;
@@ -21,11 +46,7 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.geometry.Pos;
-
 import javafx.stage.Window;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
 
 public class GameApplication extends Application {
 
@@ -44,10 +65,25 @@ public class GameApplication extends Application {
     private int gameScore = 0;
     private Text scoreText;
 
+    Timeline timeline;
+
     @Override
     public void start(Stage stage) {
         Pane root = new Pane();
+        Image image1 = new Image(getClass().getResourceAsStream("background.png"));
+
+        BackgroundImage backgroundImage = new BackgroundImage(
+                image1,
+                BackgroundRepeat.NO_REPEAT,
+                BackgroundRepeat.NO_REPEAT,
+                BackgroundPosition.CENTER,
+                new BackgroundSize(1.0, 1.0, true, true, false, true)
+        );
+
+        root.setBackground(new Background(backgroundImage));
+
         Scene scene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT);
+
 
 
 
@@ -72,7 +108,7 @@ public class GameApplication extends Application {
         scoreText.setY(30);
         root.getChildren().add(scoreText);
 
-        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(MOVE_TIME_MILLISECONDS), e -> moveSnake(root)));
+        timeline = new Timeline(new KeyFrame(Duration.millis(MOVE_TIME_MILLISECONDS), e -> moveSnake(root)));
         timeline.setCycleCount(Timeline.INDEFINITE);
         timeline.play();
 
@@ -94,40 +130,38 @@ public class GameApplication extends Application {
     }
 
 
-    private KeyCode lastCode;
-    private void updateDirection(KeyCode code) {
+    private KeyCode lastKeyCode;
+
+    private void updateDirection(KeyCode keyCode) {
         if (snake.isEmpty()) return;
+
         double dx = 0, dy = 0;
-        switch (code) {
+
+        switch (keyCode) {
             case UP:
-                if(lastCode != KeyCode.DOWN){
-                dy = -1;
-                }
+                if (lastKeyCode != KeyCode.DOWN) dy = -1;
                 break;
             case DOWN:
-                if(lastCode != KeyCode.UP) {
-                    dy = 1;
-                }
+                if (lastKeyCode != KeyCode.UP) dy = 1;
                 break;
             case LEFT:
-                if(lastCode != KeyCode.RIGHT) {
-                    dx = -1;
-                }
+                if (lastKeyCode != KeyCode.RIGHT) dx = -1;
                 break;
             case RIGHT:
-                if(lastCode != KeyCode.LEFT) {
-                    dx = 1;
-                }
+                if (lastKeyCode != KeyCode.LEFT) dx = 1;
                 break;
             case SPACE:
                 addSegment();
                 break;
         }
-        lastCode = code;
+
+        lastKeyCode = keyCode;
+
         if (dx != 0 || dy != 0) {
             snake.getFirst().setDirection(dx, dy);
         }
     }
+
 
     private void moveSnake(Pane root) {
 
@@ -170,7 +204,6 @@ public class GameApplication extends Application {
         }
 
         //Wall collision
-
         if ( (snake.getFirst().getX() > GRID_SUBDIVISIONS-1) || (snake.getFirst().getY() > GRID_SUBDIVISIONS-1) ||
              (snake.getFirst().getX() < 0) || (snake.getFirst().getY() < 0) ) { // TODO refactor
             try{
@@ -178,7 +211,7 @@ public class GameApplication extends Application {
             }catch (IOException e) {
                 e.printStackTrace();
             }
-
+            return;
         }
 
         System.out.println(snake.getFirst().getX() + " " + snake.getFirst().getY());
@@ -210,14 +243,13 @@ public class GameApplication extends Application {
     } // TODO I think this function can be simplified with an exponential equation, but what's wrong with linear increase in the first place?
 
 //    private void gameOver() {
+//        timeline.stop();
 //        System.out.println("Game over.");
 //        System.out.println("Game score: " + gameScore);
 //        Platform.exit();
 //    }// TODO stop the movement cycle immediately after death
-
     private void gameOver() throws IOException {// TODO make buttons in game over screen working. now they are not working
-
-
+        timeline.stop();
         Platform.runLater(() -> {
             Stage stage = (Stage) Stage.getWindows().stream().filter(Window::isShowing).findFirst().orElse(null);
             if(stage != null){
