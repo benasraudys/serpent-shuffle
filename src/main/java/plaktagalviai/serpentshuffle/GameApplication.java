@@ -128,16 +128,6 @@ public class GameApplication extends Application {
 
     private void moveSnake(Pane root) {
 
-        // Apple eating
-        if (apple.isAppleEaten(snake.getFirst().getX(), snake.getFirst().getY(), SUBDIVISION_LENGTH, SUBDIVISION_LENGTH)){
-            root.getChildren().remove(apple.getRectangle());
-            addApple();
-            root.getChildren().add(apple.getRectangle());
-            addSegment();
-            increaseGameScore();
-            scoreText.setText("SCORE: " + gameScore);
-        }
-
         double prevX, prevY, newX, newY, prevDx, prevDy, newDx, newDy;
         prevX = snake.getFirst().getX() + GRID_SUBDIVISIONS/2;// TODO fix this warning
         prevY = snake.getFirst().getY() + GRID_SUBDIVISIONS/2;
@@ -164,6 +154,16 @@ public class GameApplication extends Application {
             prevDx = newDx;
             prevDy = newDy;
 
+        }
+
+        // Apple eating
+        if (apple.isAppleEaten(snake.getFirst().getX(), snake.getFirst().getY(), SUBDIVISION_LENGTH, SUBDIVISION_LENGTH)){
+            root.getChildren().remove(apple.getRectangle());
+            addApple();
+            root.getChildren().add(apple.getRectangle());
+            addSegment();
+            increaseGameScore();
+            scoreText.setText("SCORE: " + gameScore);
         }
 
         //Wall collision
