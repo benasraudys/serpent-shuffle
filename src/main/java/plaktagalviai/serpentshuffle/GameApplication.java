@@ -50,7 +50,8 @@ public class GameApplication extends Application {
 
 
         // Initialize the snake with one segment at the center
-        SnakeSegment initialSegment = new SnakeSegment((float) GRID_SUBDIVISIONS / 2f,GRID_SUBDIVISIONS / 2f, SUBDIVISION_LENGTH);
+        int centerCoordinate = (int) (GRID_SUBDIVISIONS / 2f);
+        SnakeSegment initialSegment = new SnakeSegment(centerCoordinate,centerCoordinate, SUBDIVISION_LENGTH, GRID_SUBDIVISIONS);
         Image image = new Image(getClass().getResourceAsStream("snake-head.png"));
         initialSegment.getRectangle().setFill(new ImagePattern(image));
         snake.add(initialSegment);
@@ -168,18 +169,18 @@ public class GameApplication extends Application {
 
         //Wall collision
 
-        System.out.println(snake.getFirst().getX() + " " + snake.getFirst().getY());
-
         if ( (snake.getFirst().getX() > GRID_SUBDIVISIONS-1) || (snake.getFirst().getY() > GRID_SUBDIVISIONS-1) ||
              (snake.getFirst().getX() < 0) || (snake.getFirst().getY() < 0) ) { // TODO refactor
             gameOver();
         }
+
+        System.out.println(snake.getFirst().getX() + " " + snake.getFirst().getY());
     }
 
     private void addSegment() {
         SnakeSegment last = snake.getLast();
         SnakeSegment newSegment = new SnakeSegment(last.getRectangle().getX(),
-                last.getRectangle().getY(), SUBDIVISION_LENGTH);
+                last.getRectangle().getY(), SUBDIVISION_LENGTH, GRID_SUBDIVISIONS);
         Image image = new Image(getClass().getResourceAsStream("snake-body.png"));
         newSegment.getRectangle().setFill(new ImagePattern(image));
         snake.add(newSegment);
@@ -199,13 +200,13 @@ public class GameApplication extends Application {
         else{
             gameScore+=5;
         }
-    }
+    } // TODO I think this function can be simplified with an exponential equation, but what's wrong with linear increase in the first place?
 
     private void gameOver() {
         System.out.println("Game over.");
         System.out.println("Game score: " + gameScore);
         Platform.exit();
-    }
+    }// TODO stop the movement cycle immediately after death
 
 
 }

@@ -6,16 +6,18 @@ import javafx.scene.transform.Rotate;
 public class SnakeSegment {
     private final Rectangle rectangle;
     private final int subdivisionLength;
+    private final int subdivisionCount;
     private double dx;
     private double dy;
-    private double x = 8;
-    private double y = 8;
+    private double x;
+    private double y;
 
-    public SnakeSegment(double x, double y, int subdivisionLength) {
+    public SnakeSegment(double x, double y, int subdivisionLength, int subdivisionCount) {
         this.rectangle = new Rectangle(x * subdivisionLength, y * subdivisionLength, subdivisionLength, subdivisionLength);
         this.subdivisionLength = subdivisionLength;
-        //this.x = x;
-        //this.y = y;
+        this.subdivisionCount = subdivisionCount;
+        this.x = subdivisionCount/2;
+        this.y = subdivisionCount/2;
         this.dx = 0;
         this.dy = 0;
     }
