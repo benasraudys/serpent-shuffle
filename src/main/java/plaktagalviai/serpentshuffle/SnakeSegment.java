@@ -1,6 +1,7 @@
 package plaktagalviai.serpentshuffle;
 
 import javafx.scene.shape.Rectangle;
+import javafx.scene.transform.Rotate;
 
 public class SnakeSegment {
     private final Rectangle rectangle;
@@ -26,6 +27,8 @@ public class SnakeSegment {
     public void setDirection(double dx, double dy) {
         this.dx = dx;
         this.dy = dy;
+        double angle = Math.toDegrees(Math.atan2(dy, dx));
+        rectangle.setRotate(angle - 90);
     }
 
     public double getDx() {
@@ -51,5 +54,13 @@ public class SnakeSegment {
         // Updates segment coordinates
         x += dx;
         y += dy;
+    }
+
+    public void setX(double prevX) {
+        this.x = prevX;
+    }
+
+    public void setY(double prevY) {
+        this.y = prevY;
     }
 }

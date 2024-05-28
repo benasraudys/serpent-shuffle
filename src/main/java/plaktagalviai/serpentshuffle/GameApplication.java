@@ -30,7 +30,7 @@ public class GameApplication extends Application {
     private static final int SCENE_SIZE = 720; // Grid, the snake is moving on, size (in pixels) (has to be divisible by GRID_SUBDIVISIONS)
     private static final int GRID_SUBDIVISIONS = 16; // To how many parts the grid is divided to (has to be divisible by 2)
     private static final int SUBDIVISION_LENGTH = SCENE_SIZE / GRID_SUBDIVISIONS;
-    private static final int MOVE_TIME_MILLISECONDS = 90; // How fast the snake moves
+    private static final int MOVE_TIME_MILLISECONDS = 140; // How fast the snake moves
 
     private static final int WINDOW_WIDTH = 720;
     private static final int WINDOW_HEIGHT = 720;
@@ -51,7 +51,8 @@ public class GameApplication extends Application {
 
         // Initialize the snake with one segment at the center
         SnakeSegment initialSegment = new SnakeSegment((float) GRID_SUBDIVISIONS / 2f,GRID_SUBDIVISIONS / 2f, SUBDIVISION_LENGTH);
-        initialSegment.getRectangle().setFill(Color.GREEN);
+        Image image = new Image(getClass().getResourceAsStream("snake-head.png"));
+        initialSegment.getRectangle().setFill(new ImagePattern(image));
         snake.add(initialSegment);
         root.getChildren().add(initialSegment.getRectangle());
         addSegment();
@@ -126,9 +127,6 @@ public class GameApplication extends Application {
     }
 
     private void moveSnake(Pane root) {
-        double prevX, prevY, newX, newY;
-        prevX = snake.getFirst().getRectangle().getX();
-        prevY = snake.getFirst().getRectangle().getY();
 
         // Apple eating
         if (apple.isAppleEaten(snake.getFirst().getX(), snake.getFirst().getY(), SUBDIVISION_LENGTH, SUBDIVISION_LENGTH)){
@@ -140,17 +138,31 @@ public class GameApplication extends Application {
             scoreText.setText("SCORE: " + gameScore);
         }
 
+        double prevX, prevY, newX, newY, prevDx, prevDy, newDx, newDy;
+        prevX = snake.getFirst().getX() + GRID_SUBDIVISIONS/2;// TODO fix this warning
+        prevY = snake.getFirst().getY() + GRID_SUBDIVISIONS/2;
+        prevDx = snake.getFirst().getDx();
+        prevDy = snake.getFirst().getDy();
+
         snake.getFirst().move();
 
+        // Updates each snake segment
 
-
-        for (int i = 1; i < snake.size(); i++) {
-            newX = snake.get(i).getRectangle().getX();
-            newY = snake.get(i).getRectangle().getY();
-            snake.get(i).getRectangle().setX(prevX);
-            snake.get(i).getRectangle().setY(prevY);
+        for (int i = 1; i < snake.size(); i++) { // TODO this is really messy, fix this
+            SnakeSegment segment = snake.get(i);
+            newX = segment.getX();
+            newY = segment.getY();
+            newDx = segment.getDx();
+            newDy = segment.getDy();
+            segment.setX(prevX);
+            segment.setY(prevY);
+            segment.setDirection(prevDx, prevDy);
+            segment.getRectangle().setX(prevX * SUBDIVISION_LENGTH);
+            segment.getRectangle().setY(prevY * SUBDIVISION_LENGTH);
             prevX = newX;
             prevY = newY;
+            prevDx = newDx;
+            prevDy = newDy;
 
         }
 
@@ -169,7 +181,7 @@ public class GameApplication extends Application {
         SnakeSegment last = snake.getLast();
         SnakeSegment newSegment = new SnakeSegment(last.getRectangle().getX(),
                 last.getRectangle().getY(), SUBDIVISION_LENGTH);
-        Image image = new Image(getClass().getResourceAsStream("icon.png"));
+        Image image = new Image(getClass().getResourceAsStream("snake-body.png"));
         newSegment.getRectangle().setFill(new ImagePattern(image));
         snake.add(newSegment);
         ((Pane) snake.getFirst().getRectangle().getParent()).getChildren().add(newSegment.getRectangle());
