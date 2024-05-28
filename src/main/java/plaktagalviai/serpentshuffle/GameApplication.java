@@ -11,16 +11,18 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
-
+import java.io.IOException;
 import javafx.scene.image.Image;
 import javafx.scene.paint.ImagePattern;
-
-
+import javafx.fxml.FXMLLoader;
 import javafx.scene.text.Text;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+import javafx.scene.control.Label;
+import javafx.scene.layout.VBox;
+import javafx.geometry.Pos;
 
-
+import javafx.stage.Window;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -171,7 +173,12 @@ public class GameApplication extends Application {
 
         if ( (snake.getFirst().getX() > GRID_SUBDIVISIONS-1) || (snake.getFirst().getY() > GRID_SUBDIVISIONS-1) ||
              (snake.getFirst().getX() < 0) || (snake.getFirst().getY() < 0) ) { // TODO refactor
-            gameOver();
+            try{
+                gameOver();
+            }catch (IOException e) {
+                e.printStackTrace();
+            }
+
         }
 
         System.out.println(snake.getFirst().getX() + " " + snake.getFirst().getY());
@@ -202,11 +209,50 @@ public class GameApplication extends Application {
         }
     } // TODO I think this function can be simplified with an exponential equation, but what's wrong with linear increase in the first place?
 
-    private void gameOver() {
-        System.out.println("Game over.");
-        System.out.println("Game score: " + gameScore);
-        Platform.exit();
-    }// TODO stop the movement cycle immediately after death
+//    private void gameOver() {
+//        System.out.println("Game over.");
+//        System.out.println("Game score: " + gameScore);
+//        Platform.exit();
+//    }// TODO stop the movement cycle immediately after death
+
+    private void gameOver() throws IOException {// TODO make buttons in game over screen working. now they are not working
+
+
+        Platform.runLater(() -> {
+            Stage stage = (Stage) Stage.getWindows().stream().filter(Window::isShowing).findFirst().orElse(null);
+            if(stage != null){
+                try {
+                    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("gameOver.fxml"));
+                    Scene scene = new Scene(fxmlLoader.load(), 1280, 720);
+                    GameOverController controller = new GameOverController();
+                    fxmlLoader.setController("plaktagalviai.serpentshuffle.GameOverController");
+
+
+
+                    Label gameOverLabel = new Label("Game over.");
+                    Label gameScoreLabel = new Label("Game score: " + gameScore);
+
+                    gameOverLabel.setFont(new Font("Arial", 36));
+                    gameScoreLabel.setFont(new Font("Arial", 36));
+
+                    VBox vbox = new VBox(10);
+                    vbox.setAlignment(Pos.CENTER);
+                    vbox.getChildren().addAll(gameOverLabel, gameScoreLabel);
+
+                    ((Pane) scene.getRoot()).getChildren().add(vbox);
+
+                    stage.setTitle("Serpent Shuffle");
+                    Image icon = new Image(getClass().getResourceAsStream("icon.png"));
+                    stage.getIcons().add(icon);
+                    stage.setScene(scene);
+                    stage.show();
+                }catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+    }
 
 
 }
