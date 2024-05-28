@@ -14,6 +14,7 @@ import javafx.util.Duration;
 
 import javafx.scene.image.Image;
 import javafx.scene.paint.ImagePattern;
+import javafx.scene.text.Text;
 
 
 import java.util.ArrayList;
@@ -35,6 +36,7 @@ public class GameApplication extends Application {
     private Apple apple;
 
     private int gameScore = 0;
+    private Text scoreText;
 
     @Override
     public void start(Stage stage) {
@@ -54,6 +56,12 @@ public class GameApplication extends Application {
         addApple();
         root.getChildren().add(apple.getRectangle());
 
+        // Initialize score display
+        scoreText = new Text("Score: 0");
+        scoreText.setFill(Color.BLACK);
+        scoreText.setX(20);
+        scoreText.setY(30);
+        root.getChildren().add(scoreText);
 
         Timeline timeline = new Timeline(new KeyFrame(Duration.millis(MOVE_TIME_MILLISECONDS), e -> moveSnake(root)));
         timeline.setCycleCount(Timeline.INDEFINITE);
@@ -124,6 +132,7 @@ public class GameApplication extends Application {
             root.getChildren().add(apple.getRectangle());
             addSegment();
             increaseGameScore();
+            scoreText.setText("Score: " + gameScore);
         }
 
         snake.getFirst().move();
