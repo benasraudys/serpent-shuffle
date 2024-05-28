@@ -14,7 +14,11 @@ import javafx.util.Duration;
 
 import javafx.scene.image.Image;
 import javafx.scene.paint.ImagePattern;
+
+
 import javafx.scene.text.Text;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 
 
 import java.util.ArrayList;
@@ -57,9 +61,10 @@ public class GameApplication extends Application {
         root.getChildren().add(apple.getRectangle());
 
         // Initialize score display
-        scoreText = new Text("Score: 0");
+        scoreText = new Text("SCORE: 0");
         scoreText.setFill(Color.BLACK);
-        scoreText.setX(20);
+        scoreText.setFont(Font.font("Arial", FontWeight.BOLD, 20));
+        scoreText.setX(320);
         scoreText.setY(30);
         root.getChildren().add(scoreText);
 
@@ -132,7 +137,7 @@ public class GameApplication extends Application {
             root.getChildren().add(apple.getRectangle());
             addSegment();
             increaseGameScore();
-            scoreText.setText("Score: " + gameScore);
+            scoreText.setText("SCORE: " + gameScore);
         }
 
         snake.getFirst().move();
