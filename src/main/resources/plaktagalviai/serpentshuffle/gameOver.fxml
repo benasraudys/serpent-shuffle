@@ -23,10 +23,9 @@
                     <image>
                         <Image url="@game-logo2.png" />
                     </image>
-
                 </ImageView>
-                <Label fx:id="gameOverLabel" text="Game Over!" style="-fx-font-size: 36px; -fx-font-weight: bold; -fx-text-fill: red;" />
-                <Label fx:id="gameScoreLabel" text="Game Score:" style="-fx-font-size: 36px; -fx-font-weight: bold; -fx-text-fill: black;" />
+                <Label fx:id="gameOverLabel" text="Game Over!" style="-fx-font-size: 48px; -fx-font-weight: bold; -fx-text-fill: #7bcc03; -fx-effect: dropshadow(gaussian, black, 1, 1, 1, 1);" />
+                <Label fx:id="gameScoreLabel" text="Game Score:" style="-fx-font-size: 48px; -fx-font-weight: bold; -fx-text-fill: #7bcc03; -fx-effect: dropshadow(gaussian, black, 1, 1, 1, 1);" />
                 <VBox.margin>
                     <Insets bottom="100.0" />
                 </VBox.margin>
