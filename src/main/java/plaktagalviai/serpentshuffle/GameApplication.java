@@ -77,7 +77,6 @@ public class GameApplication extends Application {
         snake.add(initialSegment);
         root.getChildren().add(initialSegment.getRectangle());
         addSegment();
-        addSegment();
 
         addApple();
         root.getChildren().add(apple.getRectangle());
@@ -147,7 +146,7 @@ public class GameApplication extends Application {
         }
     }
 
-    private void moveEntireSnake(List<SnakeSegment> snake) {
+    private void moveEntireSnake() {
         double prevX, prevY, newX, newY, prevDx, prevDy, newDx, newDy;
         prevX = snake.getFirst().getX();
         prevY = snake.getFirst().getY();
@@ -156,8 +155,7 @@ public class GameApplication extends Application {
 
         snake.getFirst().move();
 
-        // Updates each snake segment
-        for (int i = 1; i < snake.size(); i++) { // TODO this is really messy, fix this
+        for (int i = 1; i < snake.size(); i++) {
             SnakeSegment segment = snake.get(i);
             newX = segment.getX();
             newY = segment.getY();
@@ -171,47 +169,47 @@ public class GameApplication extends Application {
             prevY = newY;
             prevDx = newDx;
             prevDy = newDy;
-
         }
     }
 
 
     private void updateSnake(Pane root) {
+        moveEntireSnake();
 
-        moveEntireSnake(snake);
-
-        // Apple eating
-        if (apple.isEatenBySnake(snake.getFirst())){
-            root.getChildren().remove(apple.getRectangle());
-            addApple();
-            root.getChildren().add(apple.getRectangle());
-            addSegment();
-            gameScore++;
-            scoreText.setText("SCORE: " + gameScore);
+        if (apple.isEatenBySnake(snake.getFirst())) {
+            eatTheApple(root);
         }
 
-        if (snakeCollidedWithWall(snake)) {
+        if (snakeCollidedWithWall() || snakeCollidedWithSelf()) {
             gameOver();
-            return;
         }
-
-        System.out.println(snake.getFirst().getX() + " " + snake.getFirst().getY());
     }
 
-    private Apple eatTheApple(Apple apple, Pane root) { // TODO make apple hold the root node, so you don't have to pass a reference
-        System.out.println("Apple eaten");
+    private void eatTheApple(Pane root) {
         root.getChildren().remove(apple.getRectangle());
         addApple();
         root.getChildren().add(apple.getRectangle());
         addSegment();
         gameScore++;
         scoreText.setText("SCORE: " + gameScore);
-        return apple;
     }
 
-    private boolean snakeCollidedWithWall(List<SnakeSegment> snake) {
-        return (snake.getFirst().getX() > GRID_SUBDIVISIONS - 1) || (snake.getFirst().getY() > GRID_SUBDIVISIONS - 1) ||
-                (snake.getFirst().getX() < 0) || (snake.getFirst().getY() < 0);
+    private boolean snakeCollidedWithWall() {
+        return snake.getFirst().getX() >= GRID_SUBDIVISIONS || snake.getFirst().getY() >= GRID_SUBDIVISIONS ||
+                snake.getFirst().getX() < 0 || snake.getFirst().getY() < 0;
+    }
+
+    private boolean snakeCollidedWithSelf() {
+        SnakeSegment head = snake.getFirst();
+        if (head.getDx() == 0 && head.getDy() == 0) {
+            return false;
+        }
+        for (int i = 1; i < snake.size(); i++) {
+            if (head.getX() == snake.get(i).getX() && head.getY() == snake.get(i).getY()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void addSegment() {
