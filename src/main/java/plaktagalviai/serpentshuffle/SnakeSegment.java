@@ -16,8 +16,8 @@ public class SnakeSegment {
         this.rectangle = new Rectangle(x * subdivisionLength, y * subdivisionLength, subdivisionLength, subdivisionLength);
         this.subdivisionLength = subdivisionLength;
         this.subdivisionCount = subdivisionCount;
-        this.x = subdivisionCount/2;
-        this.y = subdivisionCount/2;
+        this.x = subdivisionCount/2f;
+        this.y = subdivisionCount/2f;
         this.dx = 0;
         this.dy = 0;
     }
@@ -31,6 +31,21 @@ public class SnakeSegment {
         this.dy = dy;
         double angle = Math.toDegrees(Math.atan2(dy, dx));
         rectangle.setRotate(angle - 90);
+    }
+
+    public void updateRectangle() {
+        rectangle.setX(subdivisionLength * x);
+        rectangle.setY(subdivisionLength * y);
+    }
+
+    public void updateCoordinates(double dx, double dy) {
+        x += dx;
+        y += dy;
+    }
+
+    public void move() {
+        updateCoordinates(dx, dy);
+        updateRectangle();
     }
 
     public double getDx() {
@@ -47,15 +62,6 @@ public class SnakeSegment {
 
     public double getY() {
         return y;
-    }
-
-    public void move() {
-        // Updates the rectangle on screen
-        rectangle.setX(rectangle.getX() + subdivisionLength * dx);
-        rectangle.setY(rectangle.getY() + subdivisionLength * dy);
-        // Updates segment coordinates
-        x += dx;
-        y += dy;
     }
 
     public void setX(double prevX) {

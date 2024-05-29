@@ -1,5 +1,10 @@
 package plaktagalviai.serpentshuffle;
+import javafx.scene.image.Image;
+import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
+
+import java.util.List;
+
 public class Apple {
     private final Rectangle rectangle;
 
@@ -9,6 +14,8 @@ public class Apple {
     private double gridY;
     private double width;
     private double height;
+
+
     public Apple(double x, double y, double width, double height) {
         this.rectangle = new Rectangle(x, y, width, height);
         this.x = x;
@@ -17,12 +24,16 @@ public class Apple {
         this.height = height;
         gridX = x/width;
         gridY = y/height;
+        Image image = new Image(getClass().getResourceAsStream("apple.png"));
+        this.getRectangle().setFill(new ImagePattern(image));
     }
     public Rectangle getRectangle() {
         return rectangle;
     }
 
-    public boolean isAppleEaten(double snakeX, double snakeY, double recWidth, double recHeight){
+    public boolean isEatenBySnake(SnakeSegment snakeHead){
+        double snakeX = snakeHead.getX();
+        double snakeY = snakeHead.getY();
         return (gridX == snakeX && gridY == snakeY);
     }
 

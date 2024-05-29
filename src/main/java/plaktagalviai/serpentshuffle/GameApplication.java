@@ -21,8 +21,6 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -32,23 +30,8 @@ import javafx.scene.layout.BackgroundImage;
 import javafx.scene.layout.BackgroundPosition;
 import javafx.scene.layout.BackgroundRepeat;
 import javafx.scene.layout.BackgroundSize;
-import javafx.scene.layout.Pane;
-import javafx.scene.Scene;
-import javafx.scene.image.Image;
 
-import java.io.IOException;
-import javafx.scene.image.Image;
-import javafx.scene.paint.ImagePattern;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.text.Text;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
-import javafx.scene.control.Label;
-import javafx.scene.layout.VBox;
-import javafx.geometry.Pos;
 import javafx.stage.Window;
-
-import javafx.stage.Stage;
 
 public class GameApplication extends Application {
 
@@ -110,7 +93,7 @@ public class GameApplication extends Application {
         scoreText.setY(30);
         root.getChildren().add(scoreText);
 
-        timeline = new Timeline(new KeyFrame(Duration.millis(MOVE_TIME_MILLISECONDS), e -> moveSnake(root)));
+        timeline = new Timeline(new KeyFrame(Duration.millis(MOVE_TIME_MILLISECONDS), e -> updateSnake(root)));
         timeline.setCycleCount(Timeline.INDEFINITE);
         timeline.play();
 
@@ -127,8 +110,6 @@ public class GameApplication extends Application {
         int x = rand.nextInt(GRID_SUBDIVISIONS) * SUBDIVISION_LENGTH;
         int y = rand.nextInt(GRID_SUBDIVISIONS) * SUBDIVISION_LENGTH;
         apple = new Apple(x, y, SUBDIVISION_LENGTH, SUBDIVISION_LENGTH);
-        Image image = new Image(getClass().getResourceAsStream("apple.png"));
-        apple.getRectangle().setFill(new ImagePattern(image));
     }
 
 
@@ -164,9 +145,7 @@ public class GameApplication extends Application {
         }
     }
 
-
-    private void moveSnake(Pane root) {
-
+    private void moveEntireSnake(List<SnakeSegment> snake) {
         double prevX, prevY, newX, newY, prevDx, prevDy, newDx, newDy;
         prevX = snake.getFirst().getX();
         prevY = snake.getFirst().getY();
@@ -176,7 +155,6 @@ public class GameApplication extends Application {
         snake.getFirst().move();
 
         // Updates each snake segment
-
         for (int i = 1; i < snake.size(); i++) { // TODO this is really messy, fix this
             SnakeSegment segment = snake.get(i);
             newX = segment.getX();
@@ -186,33 +164,52 @@ public class GameApplication extends Application {
             segment.setX(prevX);
             segment.setY(prevY);
             segment.setDirection(prevDx, prevDy);
-            segment.getRectangle().setX(prevX * SUBDIVISION_LENGTH);
-            segment.getRectangle().setY(prevY * SUBDIVISION_LENGTH);
+            segment.updateRectangle();
             prevX = newX;
             prevY = newY;
             prevDx = newDx;
             prevDy = newDy;
 
         }
+    }
+
+
+    private void updateSnake(Pane root) {
+
+        moveEntireSnake(snake);
 
         // Apple eating
-        if (apple.isAppleEaten(snake.getFirst().getX(), snake.getFirst().getY(), SUBDIVISION_LENGTH, SUBDIVISION_LENGTH)){
+        if (apple.isEatenBySnake(snake.getFirst())){
             root.getChildren().remove(apple.getRectangle());
             addApple();
             root.getChildren().add(apple.getRectangle());
             addSegment();
-            increaseGameScore();
+            gameScore++;
             scoreText.setText("SCORE: " + gameScore);
         }
 
-        //Wall collision
-        if ( (snake.getFirst().getX() > GRID_SUBDIVISIONS-1) || (snake.getFirst().getY() > GRID_SUBDIVISIONS-1) ||
-             (snake.getFirst().getX() < 0) || (snake.getFirst().getY() < 0) ) { // TODO refactor
-                gameOver();
+        if (snakeCollidedWithWall(snake)) {
+            gameOver();
             return;
         }
 
-        System.out.println(snake.getFirst().getX() + " " + snake.getFirst().getY());
+        //System.out.println(snake.getFirst().getX() + " " + snake.getFirst().getY());
+    }
+
+    private Apple eatTheApple(Apple apple, Pane root) { // TODO make apple hold the root node, so you don't have to pass a reference
+        System.out.println("Apple eaten");
+        root.getChildren().remove(apple.getRectangle());
+        addApple();
+        root.getChildren().add(apple.getRectangle());
+        addSegment();
+        gameScore++;
+        scoreText.setText("SCORE: " + gameScore);
+        return apple;
+    }
+
+    private boolean snakeCollidedWithWall(List<SnakeSegment> snake) {
+        return (snake.getFirst().getX() > GRID_SUBDIVISIONS - 1) || (snake.getFirst().getY() > GRID_SUBDIVISIONS - 1) ||
+                (snake.getFirst().getX() < 0) || (snake.getFirst().getY() < 0);
     }
 
     private void addSegment() {
@@ -240,22 +237,17 @@ public class GameApplication extends Application {
         }
     } // TODO I think this function can be simplified with an exponential equation, but what's wrong with linear increase in the first place?
 
-//    private void gameOver() {
-//        timeline.stop();
-//        System.out.println("Game over.");
-//        System.out.println("Game score: " + gameScore);
-//        Platform.exit();
-//    }// TODO stop the movement cycle immediately after death
-
-    private void gameOver(){// TODO make buttons in game over screen working. now they are not working - done
+    private void gameOver(){
         timeline.stop();
+        System.out.println("Game over.");
+        System.out.println("Game score: " + gameScore);
         Platform.runLater(() -> {
             Stage stage = (Stage) Stage.getWindows().stream().filter(Window::isShowing).findFirst().orElse(null);
             if(stage != null){
                 try {
                     stage.close();
                     GameOverApplication gameOver = new GameOverApplication();
-                    gameOver.start(stage);//TODO need to stop game before menu - done
+                    gameOver.start(stage);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
