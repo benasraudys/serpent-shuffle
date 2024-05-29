@@ -4,30 +4,25 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-
-
 import javafx.scene.image.Image;
 import javafx.scene.paint.ImagePattern;
-
-
-import javafx.scene.text.Text;
-
-
 import java.util.List;
 import java.util.Random;
-
-
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundImage;
 import javafx.scene.layout.BackgroundPosition;
 import javafx.scene.layout.BackgroundRepeat;
 import javafx.scene.layout.BackgroundSize;
+import javafx.stage.Window;
 
 import javafx.stage.Window;
 
@@ -52,12 +47,16 @@ public class GameApplication extends Application {
 
     @Override
     public void start(Stage stage) {
-        Pane root = initializePane();
+        StackPane root = new StackPane();
+        Pane gamePane = initializePane();
+        root.getChildren().add(gamePane);
+
         Scene scene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT);
-        initializeSnake(root);
-        initializeApple(root);
+        initializeSnake(gamePane);
+        initializeApple(gamePane);
         initializeScore(root);
-        initializeTimeline(root);
+
+        initializeTimeline(gamePane);
 
         scene.setOnKeyPressed(event -> updateSnakeDirection(event.getCode()));
 
@@ -66,6 +65,7 @@ public class GameApplication extends Application {
         stage.setScene(scene);
         stage.show();
     }
+
 
     private Pane initializePane() {
         Pane root = new Pane();
@@ -97,14 +97,17 @@ public class GameApplication extends Application {
         root.getChildren().add(apple.getRectangle());
     }
 
-    private void initializeScore(Pane root) {
+    private void initializeScore(StackPane root) {
         scoreText = new Text("SCORE: 0");
-        scoreText.setStyle("-fx-font-size: 32px; -fx-font-weight: bold; -fx-effect: dropshadow(gaussian, black, 1, 1, 1, 1);");
+        scoreText.setStyle("-fx-font-size: 48px; -fx-font-weight: bold; -fx-effect: dropshadow(gaussian, black, 1, 1, 1, 1);");
         scoreText.setFill(Color.WHITE);
-        scoreText.setX(320);
-        scoreText.setY(30);
+
+        StackPane.setAlignment(scoreText, Pos.TOP_CENTER); // Align text to the top center
+        scoreText.setTranslateY(30); // Slightly move it down from the top
+
         root.getChildren().add(scoreText);
     }
+
 
     private void initializeTimeline(Pane root) {
         timeline = new Timeline(new KeyFrame(Duration.millis(MOVE_TIME_MILLISECONDS), e -> updateSnake(root)));
