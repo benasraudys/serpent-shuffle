@@ -48,6 +48,8 @@ import javafx.scene.layout.VBox;
 import javafx.geometry.Pos;
 import javafx.stage.Window;
 
+import javafx.stage.Stage;
+
 public class GameApplication extends Application {
 
     private static final int SCENE_SIZE = 720; // Grid, the snake is moving on, size (in pixels) (has to be divisible by GRID_SUBDIVISIONS)
@@ -206,11 +208,7 @@ public class GameApplication extends Application {
         //Wall collision
         if ( (snake.getFirst().getX() > GRID_SUBDIVISIONS-1) || (snake.getFirst().getY() > GRID_SUBDIVISIONS-1) ||
              (snake.getFirst().getX() < 0) || (snake.getFirst().getY() < 0) ) { // TODO refactor
-            try{
                 gameOver();
-            }catch (IOException e) {
-                e.printStackTrace();
-            }
             return;
         }
 
@@ -248,43 +246,21 @@ public class GameApplication extends Application {
 //        System.out.println("Game score: " + gameScore);
 //        Platform.exit();
 //    }// TODO stop the movement cycle immediately after death
-    private void gameOver() throws IOException {// TODO make buttons in game over screen working. now they are not working
+
+    private void gameOver(){// TODO make buttons in game over screen working. now they are not working - done
         timeline.stop();
         Platform.runLater(() -> {
             Stage stage = (Stage) Stage.getWindows().stream().filter(Window::isShowing).findFirst().orElse(null);
             if(stage != null){
                 try {
-                    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("gameOver.fxml"));
-                    Scene scene = new Scene(fxmlLoader.load(), 1280, 720);
-                    GameOverController controller = new GameOverController();
-                    fxmlLoader.setController("plaktagalviai.serpentshuffle.GameOverController");
-
-
-
-                    Label gameOverLabel = new Label("Game over.");
-                    Label gameScoreLabel = new Label("Game score: " + gameScore);
-
-                    gameOverLabel.setFont(new Font("Arial", 36));
-                    gameScoreLabel.setFont(new Font("Arial", 36));
-
-                    VBox vbox = new VBox(10);
-                    vbox.setAlignment(Pos.CENTER);
-                    vbox.getChildren().addAll(gameOverLabel, gameScoreLabel);
-
-                    ((Pane) scene.getRoot()).getChildren().add(vbox);
-
-                    stage.setTitle("Serpent Shuffle");
-                    Image icon = new Image(getClass().getResourceAsStream("icon.png"));
-                    stage.getIcons().add(icon);
-                    stage.setScene(scene);
-                    stage.show();
-                }catch (IOException e) {
+                    stage.close();
+                    GameOverApplication gameOver = new GameOverApplication();
+                    gameOver.start(stage);//TODO need to stop game before menu - done
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         });
-
     }
-
 
 }
