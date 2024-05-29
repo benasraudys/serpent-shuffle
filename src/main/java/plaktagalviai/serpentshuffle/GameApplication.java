@@ -17,8 +17,6 @@ import javafx.scene.paint.ImagePattern;
 
 
 import javafx.scene.text.Text;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
 
 
 import java.util.List;
@@ -88,7 +86,6 @@ public class GameApplication extends Application {
         scoreText = new Text("SCORE: 0");
         scoreText.setStyle("-fx-font-size: 32px; -fx-font-weight: bold; -fx-effect: dropshadow(gaussian, black, 1, 1, 1, 1);");
         scoreText.setFill(Color.WHITE);
-        //scoreText.setFont(Font.font("Arial", FontWeight.BOLD, 32));
         scoreText.setX(320);
         scoreText.setY(30);
         root.getChildren().add(scoreText);
@@ -116,22 +113,27 @@ public class GameApplication extends Application {
     private KeyCode lastKeyCode;
 
     private void updateDirection(KeyCode keyCode) {
-        if (snake.isEmpty()) return;
+        if (snake.isEmpty() || (lastKeyCode == KeyCode.UP && keyCode == KeyCode.DOWN)
+                || (lastKeyCode == KeyCode.DOWN  && keyCode == KeyCode.UP)
+                || (lastKeyCode == KeyCode.LEFT  && keyCode == KeyCode.RIGHT)
+                || (lastKeyCode == KeyCode.RIGHT && keyCode == KeyCode.LEFT)) {
+            return;
+        }
 
         double dx = 0, dy = 0;
 
         switch (keyCode) {
             case UP:
-                if (lastKeyCode != KeyCode.DOWN) dy = -1;
+                dy = -1;
                 break;
             case DOWN:
-                if (lastKeyCode != KeyCode.UP) dy = 1;
+                dy = 1;
                 break;
             case LEFT:
-                if (lastKeyCode != KeyCode.RIGHT) dx = -1;
+                dx = -1;
                 break;
             case RIGHT:
-                if (lastKeyCode != KeyCode.LEFT) dx = 1;
+                dx = 1;
                 break;
             case SPACE:
                 addSegment();
