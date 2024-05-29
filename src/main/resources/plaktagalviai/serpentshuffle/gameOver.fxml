@@ -8,6 +8,8 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
+<?import javafx.scene.control.Label?>
+
 <StackPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="plaktagalviai.serpentshuffle.GameOverController">
     <ImageView preserveRatio="true">
         <image>
@@ -21,10 +23,13 @@
                     <image>
                         <Image url="@game-logo2.png" />
                     </image>
-                    <VBox.margin>
-                        <Insets bottom="100.0" />
-                    </VBox.margin>
+
                 </ImageView>
+                <Label fx:id="gameOverLabel" text="Game Over!" style="-fx-font-size: 36px; -fx-font-weight: bold; -fx-text-fill: red;" />
+                <Label fx:id="gameScoreLabel" text="Game Score:" style="-fx-font-size: 36px; -fx-font-weight: bold; -fx-text-fill: black;" />
+                <VBox.margin>
+                    <Insets bottom="100.0" />
+                </VBox.margin>
                 <Button alignment="CENTER" id="restartButton" onAction="#restartGame" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: white; -fx-background-color: #7FE20D; -fx-border-color: black; -fx-min-width: 300; -fx-border-radius: 20; -fx-background-radius: 20;" text="Restart game" textAlignment="CENTER" />
                 <Button alignment="CENTER" id="exitGame" onAction="#exitGame" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: white; -fx-border-color: black; -fx-background-color: #7FE20D; -fx-min-width: 300; -fx-background-radius: 20; -fx-border-radius: 20;" text="Exit" textAlignment="CENTER" />
             </VBox>

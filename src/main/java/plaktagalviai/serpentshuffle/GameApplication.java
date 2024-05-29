@@ -239,8 +239,9 @@ public class GameApplication extends Application {
 
     private void gameOver(){
         timeline.stop();
-        System.out.println("Game over.");
-        System.out.println("Game score: " + gameScore);
+        SavedScore savedScore = new SavedScore();
+        savedScore.setScore(gameScore);
+        savedScore.saveScore();
         Platform.runLater(() -> {
             Stage stage = (Stage) Stage.getWindows().stream().filter(Window::isShowing).findFirst().orElse(null);
             if(stage != null){
