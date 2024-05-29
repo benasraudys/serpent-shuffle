@@ -53,7 +53,7 @@ public class GameApplication extends Application {
 
     @Override
     public void start(Stage stage) {
-        Pane root = new Pane();
+        Pane root = new Pane(); // TODO refactor this below
         Image image1 = new Image(getClass().getResourceAsStream("background.png"));
 
         BackgroundImage backgroundImage = new BackgroundImage(
@@ -71,7 +71,7 @@ public class GameApplication extends Application {
 
 
 
-        // Initialize the snake with one segment at the center
+        // Initialize the snake with three segment at the center
         int centerCoordinate = (int) (GRID_SUBDIVISIONS / 2f);
         SnakeSegment initialSegment = new SnakeSegment(centerCoordinate,centerCoordinate, SUBDIVISION_LENGTH, GRID_SUBDIVISIONS);
         Image image = new Image(getClass().getResourceAsStream("snake-head.png"));
@@ -86,8 +86,9 @@ public class GameApplication extends Application {
 
         // Initialize score display
         scoreText = new Text("SCORE: 0");
+        scoreText.setStyle("-fx-font-size: 32px; -fx-font-weight: bold; -fx-effect: dropshadow(gaussian, black, 1, 1, 1, 1);");
         scoreText.setFill(Color.WHITE);
-        scoreText.setFont(Font.font("Arial", FontWeight.BOLD, 32));
+        //scoreText.setFont(Font.font("Arial", FontWeight.BOLD, 32));
         scoreText.setX(320);
         scoreText.setY(30);
         root.getChildren().add(scoreText);
