@@ -35,13 +35,12 @@ import javafx.stage.Window;
 
 public class GameApplication extends Application {
 
-    private static final int SCENE_SIZE = 720; // Grid, the snake is moving on, size (in pixels) (has to be divisible by GRID_SUBDIVISIONS)
-    private static final int GRID_SUBDIVISIONS = 16; // To how many parts the grid is divided to (has to be divisible by 2)
-    private static final int SUBDIVISION_LENGTH = SCENE_SIZE / GRID_SUBDIVISIONS;
-    private static final int MOVE_TIME_MILLISECONDS = 140; // How fast the snake moves
-
     private static final int WINDOW_WIDTH = 720;
     private static final int WINDOW_HEIGHT = 720;
+    private static final int SCENE_SIZE = WINDOW_HEIGHT; // Grid, the snake is moving on, size (in pixels) (has to be divisible by GRID_SUBDIVISIONS)
+    private static final int GRID_SUBDIVISIONS = 10; // To how many parts the grid is divided to (has to be divisible by 2)
+    private static final int SUBDIVISION_LENGTH = SCENE_SIZE / GRID_SUBDIVISIONS;
+    private static final int MOVE_TIME_MILLISECONDS = 180; // How fast the snake moves
 
 
     private final List<SnakeSegment> snake = new Snake();
@@ -193,7 +192,7 @@ public class GameApplication extends Application {
             return;
         }
 
-        //System.out.println(snake.getFirst().getX() + " " + snake.getFirst().getY());
+        System.out.println(snake.getFirst().getX() + " " + snake.getFirst().getY());
     }
 
     private Apple eatTheApple(Apple apple, Pane root) { // TODO make apple hold the root node, so you don't have to pass a reference
@@ -246,7 +245,6 @@ public class GameApplication extends Application {
             Stage stage = (Stage) Stage.getWindows().stream().filter(Window::isShowing).findFirst().orElse(null);
             if(stage != null){
                 try {
-                    stage.close();
                     GameOverApplication gameOver = new GameOverApplication();
                     gameOver.start(stage);
                 } catch (Exception e) {
