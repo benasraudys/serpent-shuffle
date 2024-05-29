@@ -46,14 +46,30 @@ public class GameApplication extends Application {
 
     private int gameScore = 0;
     private Text scoreText;
+    private KeyCode lastKeyCode;
 
     Timeline timeline;
 
     @Override
     public void start(Stage stage) {
-        Pane root = new Pane(); // TODO refactor this below
-        Image image1 = new Image(getClass().getResourceAsStream("background.png"));
+        Pane root = initializePane();
+        Scene scene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT);
+        initializeSnake(root);
+        initializeApple(root);
+        initializeScore(root);
+        initializeTimeline(root);
 
+        scene.setOnKeyPressed(event -> updateSnakeDirection(event.getCode()));
+
+        stage.setTitle("Serpent Shuffle");
+        stage.setResizable(false);
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    private Pane initializePane() {
+        Pane root = new Pane();
+        Image image1 = new Image(getClass().getResourceAsStream("background.png"));
         BackgroundImage backgroundImage = new BackgroundImage(
                 image1,
                 BackgroundRepeat.NO_REPEAT,
@@ -61,44 +77,39 @@ public class GameApplication extends Application {
                 BackgroundPosition.CENTER,
                 new BackgroundSize(1.0, 1.0, true, true, false, true)
         );
-
         root.setBackground(new Background(backgroundImage));
+        return root;
+    }
 
-        Scene scene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT);
-
-
-
-
-        // Initialize the snake with three segment at the center
+    private void initializeSnake(Pane root) {
         int centerCoordinate = (int) (GRID_SUBDIVISIONS / 2f);
-        SnakeSegment initialSegment = new SnakeSegment(centerCoordinate,centerCoordinate, SUBDIVISION_LENGTH, GRID_SUBDIVISIONS);
+        SnakeSegment initialSegment = new SnakeSegment(centerCoordinate, centerCoordinate, SUBDIVISION_LENGTH, GRID_SUBDIVISIONS);
         Image image = new Image(getClass().getResourceAsStream("snake-head.png"));
         initialSegment.getRectangle().setFill(new ImagePattern(image));
         snake.add(initialSegment);
         root.getChildren().add(initialSegment.getRectangle());
         addSegment();
+        addSegment();
+    }
 
+    private void initializeApple(Pane root) {
         addApple();
         root.getChildren().add(apple.getRectangle());
+    }
 
-        // Initialize score display
+    private void initializeScore(Pane root) {
         scoreText = new Text("SCORE: 0");
         scoreText.setStyle("-fx-font-size: 32px; -fx-font-weight: bold; -fx-effect: dropshadow(gaussian, black, 1, 1, 1, 1);");
         scoreText.setFill(Color.WHITE);
         scoreText.setX(320);
         scoreText.setY(30);
         root.getChildren().add(scoreText);
+    }
 
+    private void initializeTimeline(Pane root) {
         timeline = new Timeline(new KeyFrame(Duration.millis(MOVE_TIME_MILLISECONDS), e -> updateSnake(root)));
         timeline.setCycleCount(Timeline.INDEFINITE);
         timeline.play();
-
-        scene.setOnKeyPressed(event -> updateDirection(event.getCode()));
-
-        stage.setTitle("Serpent Shuffle");
-        stage.setResizable(false);
-        stage.setScene(scene);
-        stage.show();
     }
 
     private void addApple() {
@@ -108,10 +119,7 @@ public class GameApplication extends Application {
         apple = new Apple(x, y, SUBDIVISION_LENGTH, SUBDIVISION_LENGTH);
     }
 
-
-    private KeyCode lastKeyCode;
-
-    private void updateDirection(KeyCode keyCode) {
+    private void updateSnakeDirection(KeyCode keyCode) {
         if (snake.isEmpty() || (lastKeyCode == KeyCode.UP && keyCode == KeyCode.DOWN)
                 || (lastKeyCode == KeyCode.DOWN  && keyCode == KeyCode.UP)
                 || (lastKeyCode == KeyCode.LEFT  && keyCode == KeyCode.RIGHT)
@@ -222,29 +230,14 @@ public class GameApplication extends Application {
         ((Pane) snake.getFirst().getRectangle().getParent()).getChildren().add(newSegment.getRectangle());
     }
 
-    private void increaseGameScore(){// Game score increases by more as more points are already gained
-        if(gameScore <= 5){
-            gameScore++;
-        }
-        else if(gameScore > 5 && gameScore <= 10){
-            gameScore+=2;
-        }
-        else if(gameScore > 10 && gameScore <= 27){
-            gameScore+=3;
-        }
-        else{
-            gameScore+=5;
-        }
-    } // TODO I think this function can be simplified with an exponential equation, but what's wrong with linear increase in the first place?
-
-    private void gameOver(){
+    private void gameOver() {
         timeline.stop();
         SavedScore savedScore = new SavedScore();
         savedScore.setScore(gameScore);
         savedScore.saveScore();
         Platform.runLater(() -> {
             Stage stage = (Stage) Stage.getWindows().stream().filter(Window::isShowing).findFirst().orElse(null);
-            if(stage != null){
+            if (stage != null) {
                 try {
                     GameOverApplication gameOver = new GameOverApplication();
                     gameOver.start(stage);
