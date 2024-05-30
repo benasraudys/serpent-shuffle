@@ -14,8 +14,8 @@ public class SnakeSegment {
     public SnakeSegment(double x, double y, int subdivisionLength, int subdivisionCount) {
         this.rectangle = new Rectangle(x * subdivisionLength, y * subdivisionLength, subdivisionLength, subdivisionLength);
         this.subdivisionLength = subdivisionLength;
-        this.x = subdivisionCount/2f;
-        this.y = subdivisionCount/2f;
+        this.x = x;
+        this.y = y;
         this.dx = 0;
         this.dy = 0;
     }
