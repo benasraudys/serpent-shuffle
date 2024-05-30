@@ -1,7 +1,6 @@
 package plaktagalviai.serpentshuffle;
 
 import java.util.ArrayList;
-import java.util.Random;
 import javafx.scene.image.Image;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.layout.Pane;

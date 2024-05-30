@@ -90,15 +90,15 @@ public class GameApplication extends Application {
 
     private Apple createApple() {
         Random rand = new Random();
-        int x = rand.nextInt(GRID_SUBDIVISIONS) * SUBDIVISION_LENGTH;
-        int y = rand.nextInt(GRID_SUBDIVISIONS) * SUBDIVISION_LENGTH;
+        double x = rand.nextInt(GRID_SUBDIVISIONS);
+        double y = rand.nextInt(GRID_SUBDIVISIONS);
         for (SnakeSegment segment : snake) {
-            if(x / SUBDIVISION_LENGTH == (int) segment.getX() && y / SUBDIVISION_LENGTH == (int ) segment.getY()) {
+            if( x == segment.getX() && y == segment.getY()) {
                 return createApple();
             }
         }
 
-        return new Apple(x, y, SUBDIVISION_LENGTH, SUBDIVISION_LENGTH);
+        return new Apple(x, y, SUBDIVISION_LENGTH);
     }
 
     private void initializeScore(StackPane root) {
