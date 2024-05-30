@@ -92,6 +92,12 @@ public class GameApplication extends Application {
         Random rand = new Random();
         int x = rand.nextInt(GRID_SUBDIVISIONS) * SUBDIVISION_LENGTH;
         int y = rand.nextInt(GRID_SUBDIVISIONS) * SUBDIVISION_LENGTH;
+        for (SnakeSegment segment : snake) {
+            if(x / SUBDIVISION_LENGTH == (int) segment.getX() && y / SUBDIVISION_LENGTH == (int ) segment.getY()) {
+                return createApple();
+            }
+        }
+
         return new Apple(x, y, SUBDIVISION_LENGTH, SUBDIVISION_LENGTH);
     }
 
