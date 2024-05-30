@@ -2,12 +2,7 @@ package plaktagalviai.serpentshuffle;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
-import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.scene.image.Image;
 
@@ -23,7 +18,7 @@ public class GameOverApplication extends Application {
         FXMLLoader fxmlLoader = new FXMLLoader(MenuApplication.class.getResource("gameOver.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 1280, 720);
 
-        SavedScore savedScore = SavedScore.loadScore();
+        SavedScore savedScore = new SavedScore();
         gameScore = savedScore.getScore();
 
         GameOverController controller = fxmlLoader.getController();

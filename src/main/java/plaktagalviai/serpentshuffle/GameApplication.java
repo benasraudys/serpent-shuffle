@@ -189,7 +189,6 @@ public class GameApplication extends Application {
         timeline.stop();
         SavedScore savedScore = new SavedScore();
         savedScore.setScore(gameStatus.getGameScore());
-        savedScore.saveScore();
         Platform.runLater(() -> {
             Stage stage = (Stage) Stage.getWindows().stream().filter(Window::isShowing).findFirst().orElse(null);
             if (stage != null) {
