@@ -99,7 +99,6 @@ public class GameApplication extends Application {
         snake.add(initialSegment);
         root.getChildren().add(initialSegment.getRectangle());
         snake.addSegment(root, SUBDIVISION_LENGTH, GRID_SUBDIVISIONS);
-        snake.addSegment(root, SUBDIVISION_LENGTH, GRID_SUBDIVISIONS);
     }
 
     private void initializeApple(Pane root) {
@@ -140,6 +139,7 @@ public class GameApplication extends Application {
                 (lastTimedKeyCode == KeyCode.RIGHT && keyCode == KeyCode.LEFT)) {
             return;
         }
+        lastTimedKeyCode = keyCode;
         keyPressQueue.offer(keyCode);
     }
 
@@ -163,12 +163,12 @@ public class GameApplication extends Application {
             graceTimeExpired = false;
         }
 
-        if (apple.isEatenBySnake(snake.getHead())) {
-            eatTheApple(root);
-        }
-
         if (snake.collidedWithWall(GRID_SUBDIVISIONS) || snake.collidedWithSelf()) {
             gameOver();
+        }
+
+        if (apple.isEatenBySnake(snake.getHead())) {
+            eatTheApple(root);
         }
     }
 
@@ -195,7 +195,6 @@ public class GameApplication extends Application {
 
         if (dx != 0 || dy != 0) {
             snake.getHead().setDirection(dx, dy);
-            lastTimedKeyCode = keyCode;
         }
     }
 
