@@ -35,6 +35,8 @@ public class GameApplication extends Application {
     private GameStatus gameStatus;
     private KeyCode lastKeyCode;
 
+    int cayoteTime = 0; // Gives a small grace period before hitting wall or self
+
     Timeline timeline;
 
     @Override
@@ -150,7 +152,20 @@ public class GameApplication extends Application {
     }
 
     private void updateSnake(Pane root) {
-        snake.move();
+        //snake.move();
+        if (snake.willCollideWithWall(GRID_SUBDIVISIONS) || snake.willCollideWithSelf()) {
+            if (cayoteTime > 2) {
+                snake.move();
+                cayoteTime = 0;
+            }
+            else {
+                cayoteTime++;
+                return;
+            }
+        } else {
+            snake.move();
+            cayoteTime = 0;
+        }
 
         if (apple.isEatenBySnake(snake.getHead())) {
             eatTheApple(root);
@@ -165,6 +180,7 @@ public class GameApplication extends Application {
         root.getChildren().remove(apple.getRectangle());
         apple = createApple();
         root.getChildren().add(apple.getRectangle());
+        apple.getRectangle().toBack();
         snake.addSegment(root, SUBDIVISION_LENGTH, GRID_SUBDIVISIONS);
         gameStatus.incrementScore();
     }

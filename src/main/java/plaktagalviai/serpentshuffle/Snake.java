@@ -26,8 +26,6 @@ public class Snake extends ArrayList<SnakeSegment> {
         Image tailImage = new Image(getClass().getResourceAsStream("snake-tail.png"));
         newSegment.getRectangle().setFill(new ImagePattern(tailImage));
         this.add(newSegment);
-
-        // Add the new segment's rectangle to the root and send it to back
         root.getChildren().add(newSegment.getRectangle());
         newSegment.getRectangle().toBack();
     }
@@ -62,6 +60,28 @@ public class Snake extends ArrayList<SnakeSegment> {
     public boolean collidedWithWall(int gridSubdivisions) {
         return this.getHead().getX() >= gridSubdivisions || this.getHead().getY() >= gridSubdivisions ||
                 this.getHead().getX() < 0 || this.getHead().getY() < 0;
+    }
+
+    public boolean willCollideWithWall(int gridSubdivisions) {
+        double toBeX = this.getHead().getX() + this.getHead().getDx();
+        double toBeY = this.getHead().getY() + this.getHead().getDy();
+        return toBeX >= gridSubdivisions || toBeY >= gridSubdivisions ||
+                toBeX < 0 || toBeY < 0;
+    }
+
+    public boolean willCollideWithSelf() {
+        double toBeX = this.getHead().getX() + this.getHead().getDx();
+        double toBeY = this.getHead().getY() + this.getHead().getDy();
+        SnakeSegment head = this.getHead();
+        if (head.getDx() == 0 && head.getDy() == 0) {
+            return false;
+        }
+        for (int i = 1; i < this.size(); i++) {
+            if (toBeX == this.get(i).getX() + this.get(i).getDx() && toBeY == this.get(i).getY() + this.get(i).getDy()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public boolean collidedWithSelf() {
