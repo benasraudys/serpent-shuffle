@@ -21,6 +21,9 @@ import javafx.scene.layout.BackgroundRepeat;
 import javafx.scene.layout.BackgroundSize;
 import javafx.stage.Window;
 
+import javafx.scene.image.ImageView;
+import javafx.scene.effect.BlendMode;
+
 public class GameApplication extends Application {
 
     private static final int WINDOW_WIDTH = 720;
@@ -35,7 +38,7 @@ public class GameApplication extends Application {
     private GameStatus gameStatus;
     private KeyCode lastKeyCode;
 
-    int cayoteTime = 0; // Gives a small grace period before hitting wall or self
+    boolean graceTimeExpired = false; // Gives a small grace period before hitting wall or self
 
     Timeline timeline;
 
@@ -48,6 +51,9 @@ public class GameApplication extends Application {
         Scene scene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT);
         initializeSnake(gamePane);
         initializeApple(gamePane);
+
+        initializeShadow(root);
+
         initializeScore(root);
 
         initializeTimeline(gamePane);
@@ -58,6 +64,13 @@ public class GameApplication extends Application {
         stage.setResizable(false);
         stage.setScene(scene);
         stage.show();
+    }
+
+    private void initializeShadow(StackPane root) {
+        ImageView shadowImageView = new ImageView(new Image(getClass().getResourceAsStream("shadow.png")));
+        shadowImageView.setOpacity(0.45);
+        shadowImageView.setBlendMode(BlendMode.MULTIPLY);
+        root.getChildren().add(shadowImageView);
     }
 
     private Pane initializePane() {
@@ -95,11 +108,10 @@ public class GameApplication extends Application {
         double x = rand.nextInt(GRID_SUBDIVISIONS);
         double y = rand.nextInt(GRID_SUBDIVISIONS);
         for (SnakeSegment segment : snake) {
-            if( x == segment.getX() && y == segment.getY()) {
+            if (x == segment.getX() && y == segment.getY()) {
                 return createApple();
             }
         }
-
         return new Apple(x, y, SUBDIVISION_LENGTH);
     }
 
@@ -152,19 +164,18 @@ public class GameApplication extends Application {
     }
 
     private void updateSnake(Pane root) {
-        //snake.move();
         if (snake.willCollideWithWall(GRID_SUBDIVISIONS) || snake.willCollideWithSelf()) {
-            if (cayoteTime > 2) {
+            if (graceTimeExpired) {
                 snake.move();
-                cayoteTime = 0;
+                graceTimeExpired = false;
             }
             else {
-                cayoteTime++;
+                graceTimeExpired = true;
                 return;
             }
         } else {
             snake.move();
-            cayoteTime = 0;
+            graceTimeExpired = false;
         }
 
         if (apple.isEatenBySnake(snake.getHead())) {
