@@ -54,8 +54,8 @@ public class GameManager {
         initialSegment.getRectangle().setFill(new ImagePattern(image));
         snake.add(initialSegment);
         root.getChildren().add(initialSegment.getRectangle());
-        snake.addSegment(root, SUBDIVISION_LENGTH);
-        snake.addSegment(root, SUBDIVISION_LENGTH);
+        snake.addSegment(root, SUBDIVISION_LENGTH, GRID_SUBDIVISIONS);
+        snake.addSegment(root, SUBDIVISION_LENGTH, GRID_SUBDIVISIONS);
     }
 
     public void initializeApple(Pane root) {
@@ -85,7 +85,7 @@ public class GameManager {
         root.getChildren().remove(apple.getRectangle());
         apple = createApple();
         root.getChildren().add(apple.getRectangle());
-        snake.addSegment(root, SUBDIVISION_LENGTH);
+        snake.addSegment(root, SUBDIVISION_LENGTH, GRID_SUBDIVISIONS);
         gameStatus.incrementScore();
     }
 

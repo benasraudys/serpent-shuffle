@@ -15,15 +15,23 @@ public class Snake extends ArrayList<SnakeSegment> {
         return this.isEmpty() ? null : this.get(this.size() - 1);
     }
 
-    public void addSegment(Pane root, int subdivisionLength) {
+    public void addSegment(Pane root, int subdivisionLength, int subdivisionCount) {
         SnakeSegment last = this.getTail();
+        if (this.getTail() != this.getHead()) {
+            Image bodyImage = new Image(getClass().getResourceAsStream("snake-body.png"));
+            last.getRectangle().setFill(new ImagePattern(bodyImage));
+        }
         SnakeSegment newSegment = new SnakeSegment(last.getRectangle().getX(),
-                last.getRectangle().getY(), subdivisionLength, subdivisionLength);
-        Image image = new Image(getClass().getResourceAsStream("snake-body.png"));
-        newSegment.getRectangle().setFill(new ImagePattern(image));
+                last.getRectangle().getY(), subdivisionLength, subdivisionCount);
+        Image tailImage = new Image(getClass().getResourceAsStream("snake-tail.png"));
+        newSegment.getRectangle().setFill(new ImagePattern(tailImage));
         this.add(newSegment);
+
+        // Add the new segment's rectangle to the root and send it to back
         root.getChildren().add(newSegment.getRectangle());
+        newSegment.getRectangle().toBack();
     }
+
 
     public void move() {
         double prevX, prevY, newX, newY, prevDx, prevDy, newDx, newDy;

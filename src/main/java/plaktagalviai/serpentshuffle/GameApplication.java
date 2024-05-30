@@ -79,8 +79,8 @@ public class GameApplication extends Application {
         initialSegment.getRectangle().setFill(new ImagePattern(image));
         snake.add(initialSegment);
         root.getChildren().add(initialSegment.getRectangle());
-        snake.addSegment(root, SUBDIVISION_LENGTH);
-        snake.addSegment(root, SUBDIVISION_LENGTH);
+        snake.addSegment(root, SUBDIVISION_LENGTH, GRID_SUBDIVISIONS);
+        snake.addSegment(root, SUBDIVISION_LENGTH, GRID_SUBDIVISIONS);
     }
 
     private void initializeApple(Pane root) {
@@ -138,7 +138,7 @@ public class GameApplication extends Application {
                 dx = 1;
                 break;
             case SPACE:
-                snake.addSegment((Pane) snake.getFirst().getRectangle().getParent(), SUBDIVISION_LENGTH);
+                snake.addSegment((Pane) snake.getFirst().getRectangle().getParent(), SUBDIVISION_LENGTH, GRID_SUBDIVISIONS);
                 break;
         }
 
@@ -165,7 +165,7 @@ public class GameApplication extends Application {
         root.getChildren().remove(apple.getRectangle());
         apple = createApple();
         root.getChildren().add(apple.getRectangle());
-        snake.addSegment(root, SUBDIVISION_LENGTH);
+        snake.addSegment(root, SUBDIVISION_LENGTH, GRID_SUBDIVISIONS);
         gameStatus.incrementScore();
     }
 
