@@ -20,6 +20,9 @@ import javafx.scene.layout.BackgroundPosition;
 import javafx.scene.layout.BackgroundRepeat;
 import javafx.scene.layout.BackgroundSize;
 import javafx.stage.Window;
+import java.util.LinkedList;
+import java.util.Queue;
+
 
 import javafx.scene.image.ImageView;
 import javafx.scene.effect.BlendMode;
@@ -36,7 +39,8 @@ public class GameApplication extends Application {
     private final Snake snake = new Snake();
     private Apple apple;
     private GameStatus gameStatus;
-    private KeyCode lastKeyCode;
+    private KeyCode lastTimedKeyCode;
+    private final Queue<KeyCode> keyPressQueue = new LinkedList<>();
 
     boolean graceTimeExpired = false; // Gives a small grace period before hitting wall or self
 
@@ -58,7 +62,7 @@ public class GameApplication extends Application {
 
         initializeTimeline(gamePane);
 
-        scene.setOnKeyPressed(event -> updateSnakeDirection(event.getCode()));
+        scene.setOnKeyPressed(event -> updateSnakeDirection(event.getCode())); // On key press add the keycode to a list of keycodes
 
         stage.setTitle("Serpent Shuffle");
         stage.setResizable(false);
@@ -129,13 +133,46 @@ public class GameApplication extends Application {
     }
 
     private void updateSnakeDirection(KeyCode keyCode) {
-        if (snake.isEmpty() || (lastKeyCode == KeyCode.UP && keyCode == KeyCode.DOWN)
-                || (lastKeyCode == KeyCode.DOWN && keyCode == KeyCode.UP)
-                || (lastKeyCode == KeyCode.LEFT && keyCode == KeyCode.RIGHT)
-                || (lastKeyCode == KeyCode.RIGHT && keyCode == KeyCode.LEFT)) {
+        if (snake.isEmpty() || keyPressQueue.contains(keyCode) ||
+                (lastTimedKeyCode == KeyCode.UP && keyCode == KeyCode.DOWN) ||
+                (lastTimedKeyCode == KeyCode.DOWN && keyCode == KeyCode.UP) ||
+                (lastTimedKeyCode == KeyCode.LEFT && keyCode == KeyCode.RIGHT) ||
+                (lastTimedKeyCode == KeyCode.RIGHT && keyCode == KeyCode.LEFT)) {
             return;
         }
+        keyPressQueue.offer(keyCode);
+    }
 
+
+    private void updateSnake(Pane root) {
+        if (!keyPressQueue.isEmpty()) {
+            KeyCode keyCode = keyPressQueue.poll();
+            processKeyCode(keyCode);
+        }
+
+        if (snake.willCollideWithWall(GRID_SUBDIVISIONS) || snake.willCollideWithSelf()) {
+            if (graceTimeExpired) {
+                snake.move();
+                graceTimeExpired = false;
+            } else {
+                graceTimeExpired = true;
+                return;
+            }
+        } else {
+            snake.move();
+            graceTimeExpired = false;
+        }
+
+        if (apple.isEatenBySnake(snake.getHead())) {
+            eatTheApple(root);
+        }
+
+        if (snake.collidedWithWall(GRID_SUBDIVISIONS) || snake.collidedWithSelf()) {
+            gameOver();
+        }
+    }
+
+    private void processKeyCode(KeyCode keyCode) {
         double dx = 0, dy = 0;
 
         switch (keyCode) {
@@ -156,36 +193,12 @@ public class GameApplication extends Application {
                 break;
         }
 
-        lastKeyCode = keyCode;
-
         if (dx != 0 || dy != 0) {
             snake.getHead().setDirection(dx, dy);
+            lastTimedKeyCode = keyCode;
         }
     }
 
-    private void updateSnake(Pane root) {
-        if (snake.willCollideWithWall(GRID_SUBDIVISIONS) || snake.willCollideWithSelf()) {
-            if (graceTimeExpired) {
-                snake.move();
-                graceTimeExpired = false;
-            }
-            else {
-                graceTimeExpired = true;
-                return;
-            }
-        } else {
-            snake.move();
-            graceTimeExpired = false;
-        }
-
-        if (apple.isEatenBySnake(snake.getHead())) {
-            eatTheApple(root);
-        }
-
-        if (snake.collidedWithWall(GRID_SUBDIVISIONS) || snake.collidedWithSelf()) {
-            gameOver();
-        }
-    }
 
     private void eatTheApple(Pane root) {
         root.getChildren().remove(apple.getRectangle());
