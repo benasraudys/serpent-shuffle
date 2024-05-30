@@ -119,7 +119,14 @@ public class GameApplication extends Application {
         Random rand = new Random();
         int x = rand.nextInt(GRID_SUBDIVISIONS) * SUBDIVISION_LENGTH;
         int y = rand.nextInt(GRID_SUBDIVISIONS) * SUBDIVISION_LENGTH;
+        for (SnakeSegment segment : snake) {
+            if((int) segment.getX() == x / SUBDIVISION_LENGTH && (int) segment.getY() == y / SUBDIVISION_LENGTH) {
+                addApple();
+                return;
+            }
+        }
         apple = new Apple(x, y, SUBDIVISION_LENGTH, SUBDIVISION_LENGTH);
+
     }
 
     private void updateSnakeDirection(KeyCode keyCode) {
