@@ -1,36 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.StackPane?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
 
-<?import javafx.scene.control.Label?>
-
-<StackPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="plaktagalviai.serpentshuffle.GameOverController">
-    <ImageView preserveRatio="true">
+<StackPane xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="plaktagalviai.serpentshuffle.GameOverController">
+    <ImageView fitHeight="720.0" fitWidth="720.0" preserveRatio="true">
         <image>
-            <Image url="@menu-background.png" /> <!-- Use the smooth property of the Image for nearest neighbor interpolation -->
+            <Image url="@menu-background2.png" /> <!-- Use the smooth property of the Image for nearest neighbor interpolation -->
         </image>
     </ImageView>
     <AnchorPane>
         <children>
             <VBox alignment="CENTER" spacing="20" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                <ImageView fitHeight="300.0" fitWidth="1280.0" pickOnBounds="true" preserveRatio="true">
+                <ImageView fitHeight="300.0" fitWidth="720.0" pickOnBounds="true" preserveRatio="true">
                     <image>
-                        <Image url="@game-logo2.png" />
+                        <Image url="@title1.png" />
                     </image>
                 </ImageView>
-                <Label fx:id="gameOverLabel" text="Game Over!" style="-fx-font-size: 48px; -fx-font-weight: bold; -fx-text-fill: #7bcc03; -fx-effect: dropshadow(gaussian, black, 1, 1, 1, 1);" />
-                <Label fx:id="gameScoreLabel" text="Game Score:" style="-fx-font-size: 48px; -fx-font-weight: bold; -fx-text-fill: #7bcc03; -fx-effect: dropshadow(gaussian, black, 1, 1, 1, 1);" />
+                <Label fx:id="gameOverLabel" style="-fx-font-size: 48px; -fx-font-weight: bold; -fx-text-fill: #7FE20D; -fx-effect: dropshadow(gaussian, black, 3, 1, 0, 0);" text="Game Over!" />
+                <Label fx:id="gameScoreLabel" style="-fx-font-size: 48px; -fx-font-weight: bold; -fx-text-fill: #7FE20D; -fx-effect: dropshadow(gaussian, black, 3, 1, 0, 0);" text="Game Score:" />
+                <Button id="restartButton" alignment="CENTER" onAction="#restartGame" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: white; -fx-background-color: #7FE20D; -fx-border-color: black; -fx-min-width: 300; -fx-border-radius: 20; -fx-background-radius: 20;" text="Restart game" textAlignment="CENTER" />
+                <Button id="exitGame" alignment="CENTER" onAction="#exitGame" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: white; -fx-border-color: black; -fx-background-color: #7FE20D; -fx-min-width: 300; -fx-background-radius: 20; -fx-border-radius: 20;" text="Exit" textAlignment="CENTER" />
                 <VBox.margin>
                     <Insets bottom="100.0" />
                 </VBox.margin>
-                <Button alignment="CENTER" id="restartButton" onAction="#restartGame" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: white; -fx-background-color: #7FE20D; -fx-border-color: black; -fx-min-width: 300; -fx-border-radius: 20; -fx-background-radius: 20;" text="Restart game" textAlignment="CENTER" />
-                <Button alignment="CENTER" id="exitGame" onAction="#exitGame" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: white; -fx-border-color: black; -fx-background-color: #7FE20D; -fx-min-width: 300; -fx-background-radius: 20; -fx-border-radius: 20;" text="Exit" textAlignment="CENTER" />
             </VBox>
         </children>
     </AnchorPane>

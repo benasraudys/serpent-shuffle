@@ -16,7 +16,7 @@ public class GameOverApplication extends Application {
     @Override
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(MenuApplication.class.getResource("gameOver.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 1280, 720);
+        Scene scene = new Scene(fxmlLoader.load(), 720, 720);
 
         SavedScore savedScore = new SavedScore();
         gameScore = savedScore.getScore();
@@ -29,7 +29,7 @@ public class GameOverApplication extends Application {
         stage.setTitle("Serpent Shuffle");
         Image icon = new Image(getClass().getResourceAsStream("icon.png"));
         stage.getIcons().add(icon);
-        //stage.setResizable(false);
+        stage.setResizable(false);
         stage.setScene(scene);
         stage.show();
     }
